@@ -118,9 +118,6 @@ pip config --user set global.extra-index-url https://<username>:<password>@repo.
 pip config --user set global.trusted-host repo.brandcompete.com
 ```
 
-```
-pip install brandcompete_aiman_client
-```
 ### Local config / Credentials
 1) Copy pypirc.template to pypirc.local ```cp -p pypirc.template pypirc.local```
 2) Fill out 'username' and 'password' in pypirc.local
