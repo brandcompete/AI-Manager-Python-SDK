@@ -16,7 +16,7 @@ pip install -e git+https://github.com/brandcompete/AI-Manager-Python-SDK.git
 
 Or add this into your requirements.txt
 ```
-AI-Manager-Python-SDK @ git+https://github.com/brandcompete/AI-Manager-Python-SDK.git
+AI-Manager-Python-SDK @ git+https://github.com/brandcompete/AI-Manager-Python-SDK.git#egg=AI-Manager-Python-SDK
 ```
 and install via pip like
 ```
