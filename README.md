@@ -3,9 +3,6 @@
 ## Preconditions
 
 Python in version 3.12+ is installed
-Note: Most developers install this in the main python environment, not in a virtual environment
-
-
 
 ## How to install
 
