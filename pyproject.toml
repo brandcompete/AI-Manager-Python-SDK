@@ -7,7 +7,8 @@ name = "AI-Manager-Python-SDK"
 version = "1.0.2"
 dependencies = [
     'dataclasses-json==0.6.3',
-    'pyjwt==2.8.0'
+    'pyjwt==2.8.0',
+    'llama-hub==0.0.71
 
 ]
 description = "Service client to communicate with AI Man-API"
