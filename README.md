@@ -9,12 +9,6 @@ Note: Most developers install this in the main python environment, not in a virt
 
 ## How to install
 
-Add brandcompete repository (artifactory) to your global pip configuration
-```
-pip config --user set global.extra-index-url https://repo.brandcompete.com/artifactory/api/pypi/pypi/simple
-pip config --user set global.trusted-host repo.brandcompete.com
-```
-
 ```
 pip install brandcompete_aiman_client
 ```
