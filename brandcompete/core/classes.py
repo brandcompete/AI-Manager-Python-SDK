@@ -88,9 +88,18 @@ class Route(Enum):
     AUTH_REFRESH = '/api/v1/auth/refresh'
     PROMPT = '/api/v1/models/model_id/prompt'
 
+class Loader(Enum):
+    PDF = 1,
+    EXCEL = 2,
+    MS_WORD_DOCX = 3,
+    CSV = 4
+
 __all__ = [
 
     AI_Model,
     Project,
-    Query
+    Query,
+    Route,
+    Prompt,
+    Loader
 ]
