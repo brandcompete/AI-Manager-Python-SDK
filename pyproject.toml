@@ -3,7 +3,7 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "brandcompete_aiman_client"
+name = "AI-Manager-Python-SDK"
 version = "1.0.2"
 dependencies = [
     'dataclasses-json==0.6.3',
