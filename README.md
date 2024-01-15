@@ -1,4 +1,4 @@
-# brandcompete AI Man ServiceClient
+# brandcompete AI-Manager-Python-SDK
 
 ## Preconditions
 
