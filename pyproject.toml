@@ -11,9 +11,10 @@ dependencies = [
 
 ]
 description = "Service client to communicate with an AI_ManAPI"
+license = "Apache-2.0"
 classifiers = [
     "Programming Language :: Python :: 3",
-    "LICENSE :: OTHER/PROPRIETARY LICENSE",
+    "LICENSE :: Apache-2.0",
     "Operating System :: OS Independent"
 ]
 readme = "README.md"
