@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "brandcompete_aiman_client"
+version = "1.0.2"
+dependencies = [
+    'dataclasses-json==0.6.3',
+    'pyjwt==2.8.0'
+
+]
+description = "Service client to communicate with an AI_ManAPI"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "LICENSE :: OTHER/PROPRIETARY LICENSE",
+    "Operating System :: OS Independent"
+]
+readme = "README.md"
+
+[tool.setuptools.packages]
+find = {}  # Scan the project directory with the default parameters

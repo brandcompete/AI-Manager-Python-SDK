@@ -1,0 +1,68 @@
+import requests, json
+from enum import Enum
+from typing import (
+    Any, Dict, List, Optional, Union,
+    TYPE_CHECKING
+)
+
+from brandcompete.core.credentials import TokenCredential
+from brandcompete.core.classes import AI_Model, PromptOptions, Route, Filter, Prompt
+from brandcompete.core.util import Util
+
+class RequestType(Enum):
+    POST = 0,
+    GET = 1,
+    PUT = 2,
+    DELETE = 3
+
+class AI_ManServiceClient():
+
+    def __init__(self, credential:TokenCredential , **kwargs: Any) -> None:
+        
+        self.credential = credential   
+        
+    def set_model(self, model:AI_Model) -> None:
+        pass
+    
+    def get_models(self, filter:Filter = None) -> List[AI_Model]:
+        results = self._perform_request(type=RequestType.GET, route=Route.GET_MODELS.value)
+        models = list()
+        for model in results['Models']:
+            models.append(AI_Model.from_dict(model))
+        
+        return models
+
+    def prompt(self, model_id:int, query:str) -> str:
+        prompt_options = PromptOptions()
+        prompt = Prompt()
+        prompt.prompt = query
+        prompt_dict = prompt.to_dict()
+        prompt_option_dict = prompt_options.to_dict()
+        prompt_dict['options'] = prompt_option_dict
+        route = Route.PROMPT.value.replace("model_id", f"{model_id}")
+        response = self._perform_request(RequestType.POST,route=route, data=prompt_dict)
+        return response['ResponseText']
+
+    def _perform_request(self, type: RequestType, route:str, data:dict = None) -> dict:
+
+        if self.credential.auto_refresh_token and Util.is_token_expired(self.credential.access.expires_on):
+           self.credential.refresh_access_token()
+
+        url = f"{self.credential.api_host}{route}"
+        response = None
+        headers = {"accept": "application/json"}
+        headers.update({"Authorization": f"Bearer {self.credential.access.token}"})
+        if type == RequestType.GET:
+            response = requests.get(url=url, headers=headers)
+
+        if type == RequestType.POST:
+            headers.update({"Content-Type": "application/json"})
+            response = requests.post(url=url, headers=headers, json=data)
+        
+        if response.status_code != 200:
+            raise Exception(f"[{response.status_code}] Reason: {response.reason}")
+
+        content = json.loads(response.content.decode('utf-8'))
+        return content['messageContent']['data']
+        
+        

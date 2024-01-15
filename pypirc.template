@@ -1,0 +1,6 @@
+[distutils]
+index-servers = local
+[local]
+repository: https://repo.brandcompete.com/artifactory/api/pypi/pypi-local
+username: 
+password: 
