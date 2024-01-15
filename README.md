@@ -1,17 +1,14 @@
-# brandcompete AI Man ServiceClient
+# brandcompete AI-Manager-Python-SDK
 
 ## Preconditions
 
 Python in version 3.12+ is installed
-Note: Most developers install this in the main python environment, not in a virtual environment
-
-
 
 ## How to install
 
 Inside your project folder (or python environment) you can install the SDK via pip
 ```
-pip install -e git+https://github.com/brandcompete/AI-Manager-Python-SDK.git
+pip install -e git+https://github.com/brandcompete/AI-Manager-Python-SDK.git#egg=AI-Manager-Python-SDK
 ```
 
 Or add this into your requirements.txt
