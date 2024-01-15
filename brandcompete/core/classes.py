@@ -89,10 +89,10 @@ class Route(Enum):
     PROMPT = '/api/v1/models/model_id/prompt'
 
 class Loader(Enum):
-    PDF = 1,
-    EXCEL = 2,
-    MS_WORD_DOCX = 3,
-    CSV = 4
+    PDF = "PDFReader",
+    EXCEL = "PandasExcelReader",
+    MS_WORD_DOCX = "DocxReader",
+    CSV = "SimpleCSVReader"
 
 __all__ = [
 

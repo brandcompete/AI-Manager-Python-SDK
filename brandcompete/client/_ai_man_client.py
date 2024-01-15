@@ -1,12 +1,23 @@
 import requests, json
 from enum import Enum
+from llama_index import download_loader
+from llama_index.schema import Document
+from pathlib import Path
 from typing import (
     Any, Dict, List, Optional, Union,
     TYPE_CHECKING
 )
 
 from brandcompete.core.credentials import TokenCredential
-from brandcompete.core.classes import AI_Model, PromptOptions, Route, Filter, Prompt
+from brandcompete.core.classes import (
+    AI_Model, 
+    PromptOptions, 
+    Route, 
+    Filter, 
+    Prompt,
+    Loader 
+)
+
 from brandcompete.core.util import Util
 
 class RequestType(Enum):
@@ -32,7 +43,14 @@ class AI_ManServiceClient():
         
         return models
 
-    def prompt(self, model_id:int, query:str) -> str:
+    def prompt(self, model_id:int, query:str, loader: Loader = None, file_path:str = None) -> str:
+
+        if loader is not None and file_path is None:
+            raise ValueError(f"Missing Argument: file_path (If a loader is passed as argument, you need to set a valid file_path)")            
+
+        if loader is not None:
+            document_text = self._handle_loader(loader=loader, file_path=file_path)
+        
         prompt_options = PromptOptions()
         prompt = Prompt()
         prompt.prompt = query
@@ -42,6 +60,22 @@ class AI_ManServiceClient():
         route = Route.PROMPT.value.replace("model_id", f"{model_id}")
         response = self._perform_request(RequestType.POST,route=route, data=prompt_dict)
         return response['ResponseText']
+
+    def _handle_loader(self, loader:Loader, file_path:str) -> str:
+        
+        documents: List[Document] = None
+        if loader is Loader.EXCEL:
+            PandasExcelReader = download_loader(loader.value)
+            documents = PandasExcelReader(pandas_config={"header": 0}).load_data(file=Path(file_path))
+        else:   
+            reader = download_loader(loader.value)
+            documents = reader().load_data(file=Path(file_path))
+        text = ""
+
+        for doc in documents:
+            text += doc.get_text()
+
+        return text
 
     def _perform_request(self, type: RequestType, route:str, data:dict = None) -> dict:
 
