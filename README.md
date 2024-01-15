@@ -11,12 +11,12 @@ Note: Most developers install this in the main python environment, not in a virt
 
 Inside your project folder (or python environment) you can install the SDK via pip
 ```
-pip install -e git+https://github.com/brandcompete/AI-Manager-Python-SDK.git
+pip install -e git+https://github.com/brandcompete/AI-Manager-Python-SDK.git#egg=AI-Manager-Python-SDK
 ```
 
 Or add this into your requirements.txt
 ```
-AI-Manager-Python-SDK @ git+https://github.com/brandcompete/AI-Manager-Python-SDK.git#egg=AI-Manager-Python-SDK
+AI-Manager-Python-SDK @ git+https://github.com/brandcompete/AI-Manager-Python-SDK.git
 ```
 and install via pip like
 ```
