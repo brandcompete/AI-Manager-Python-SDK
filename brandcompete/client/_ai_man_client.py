@@ -2,6 +2,10 @@ import requests, json
 from enum import Enum
 from llama_index import download_loader
 from llama_index.schema import Document
+from llama_hub.file.docx import DocxReader
+from llama_hub.file.pdf import PDFReader
+from llama_hub.file.pandas_excel import PandasExcelReader
+from llama_hub.file.simple_csv import SimpleCSVReader
 from pathlib import Path
 from typing import (
     Any, Dict, List, Optional, Union,
@@ -52,9 +56,9 @@ class AI_ManServiceClient():
         prompt = Prompt()
 
         if loader is not None:
-            document_text = self._handle_loader(loader=loader, file_path=file_path)
-            prompt.context = document_text
-        
+            document_text = self.get_document_content(loader=loader, file_path=file_path)
+            query += f'{document_text}'
+            
         prompt.prompt = query
         prompt_dict = prompt.to_dict()
         prompt_option_dict = prompt_options.to_dict()
@@ -63,24 +67,25 @@ class AI_ManServiceClient():
         response = self._perform_request(RequestType.POST,route=route, data=prompt_dict)
         return response['ResponseText']
 
-    def _handle_loader(self, loader:Loader, file_path:str) -> str:
+    def get_document_content(self, loader:Loader, file_path:str) -> str:
         
         documents: List[Document] = None
         if loader is Loader.EXCEL:
-            PandasExcelReader = download_loader(loader.value)
             documents = PandasExcelReader(pandas_config={"header": 0}).load_data(file=Path(file_path))
-        if loader is Loader.PDF: 
-            PDFReader = download_loader(loader.value)
+        if loader is Loader.PDF:
             documents = PDFReader().load_data(file=Path(file_path))
         if loader is Loader.CSV: 
-            SimpleCSVReader = download_loader(loader.value)
-            documents = SimpleCSVReader(encoding="utf-8").load_data(file=file_path)
-        
+            documents = SimpleCSVReader(encoding="utf-8").load_data(file=Path(file_path))
+        if loader is Loader.MS_WORD_DOCX:
+            documents = DocxReader().load_data(file=Path(file_path))
         text = ""
 
         for doc in documents:
             text += doc.get_text()
-
+        
+        print(f"Fetched text out of Documen{file_path}\n")
+        print(f"{text}\n")
+        print(f"Lenght: {len(text)}")
         return text
 
     def _perform_request(self, type: RequestType, route:str, data:dict = None) -> dict:

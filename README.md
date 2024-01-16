@@ -2,7 +2,7 @@
 
 ## Preconditions
 
-Python in version 3.12+ is installed
+Python version: >=3.8.1,<3.12
 
 ## How to install
 
