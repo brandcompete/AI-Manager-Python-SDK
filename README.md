@@ -73,7 +73,9 @@ Current available loaders:
 - loader.CSV
 
 ```
-#example
+
+from brandcompete.core.classes import Loader
+
 query="Please summarize the following text."
     
 result = client.prompt(
