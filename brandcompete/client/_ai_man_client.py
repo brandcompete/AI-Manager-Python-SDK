@@ -48,11 +48,13 @@ class AI_ManServiceClient():
         if loader is not None and file_path is None:
             raise ValueError(f"Missing Argument: file_path (If a loader is passed as argument, you need to set a valid file_path)")            
 
-        if loader is not None:
-            document_text = self._handle_loader(loader=loader, file_path=file_path)
-        
         prompt_options = PromptOptions()
         prompt = Prompt()
+
+        if loader is not None:
+            document_text = self._handle_loader(loader=loader, file_path=file_path)
+            prompt.context = document_text
+        
         prompt.prompt = query
         prompt_dict = prompt.to_dict()
         prompt_option_dict = prompt_options.to_dict()
