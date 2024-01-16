@@ -76,9 +76,9 @@ Current available loaders are:
 
 from brandcompete.core.classes import Loader
 
-query="Please summarize the following text."
+query="Please summarize the following text: "
     
-result = client.prompt(
+response:str = client.prompt(
     model_id=1, 
     query=query, 
     loader=Loader.PDF, 
