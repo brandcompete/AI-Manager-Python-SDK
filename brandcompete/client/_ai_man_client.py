@@ -69,9 +69,13 @@ class AI_ManServiceClient():
         if loader is Loader.EXCEL:
             PandasExcelReader = download_loader(loader.value)
             documents = PandasExcelReader(pandas_config={"header": 0}).load_data(file=Path(file_path))
-        else:   
-            reader = download_loader(loader.value)
-            documents = reader().load_data(file=Path(file_path))
+        if loader is Loader.PDF: 
+            PDFReader = download_loader(loader.value)
+            documents = PDFReader().load_data(file=Path(file_path))
+        if loader is Loader.CSV: 
+            SimpleCSVReader = download_loader(loader.value)
+            documents = SimpleCSVReader(encoding="utf-8").load_data(file=file_path)
+        
         text = ""
 
         for doc in documents:
