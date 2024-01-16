@@ -76,7 +76,7 @@ Current available loaders:
 #example
 query="Please summarize the following text."
     
-result = client.prompt(model_id=models[1].id,query=query, loader=Loader.PDF, file_path='./data/test.pdf' )
+result = client.prompt(model_id=1, query=query, loader=Loader.PDF, file_path='./your_path/test.pdf' )
 ```
 
 ## Frequently used AI-Models
