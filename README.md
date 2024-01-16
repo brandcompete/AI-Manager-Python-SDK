@@ -72,10 +72,6 @@ Current available loaders are:
 - loader.DOCX
 - loader.CSV
 
-#### Possible loaders
-
-NOTE: Feel free to contact us to enhance our SDK with one of [these](https://llamahub.ai/?tab=loaders) available loader.
-Mail to: thorsten.atzeni@brandcompete.com
 ```
 
 from brandcompete.core.classes import Loader
@@ -89,6 +85,10 @@ result = client.prompt(
     file_path="./your_path/test.pdf")
 ```
 
+### Possible loaders
+
+NOTE: Feel free to contact us to enhance our SDK with one of [these](https://llamahub.ai/?tab=loaders) available loader.
+Mail to: thorsten.atzeni@brandcompete.com
 ## Frequently used AI-Models
 
 - [ID: 1] MISTRAL                   - The Mistral 7B model released by Mistral AI
