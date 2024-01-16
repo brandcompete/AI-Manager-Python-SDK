@@ -74,7 +74,7 @@ Current available loaders are:
 
 #### Possible loaders
 
-NOTE: Feel free to contact us to enhance our SDK with [these](https://github.com/user/repo/blob/branch/other_file.md) listed loaders:
+NOTE: Feel free to contact us to enhance our SDK with one of [these](https://github.com/user/repo/blob/branch/other_file.md) available loader.
 Mail to: thorsten.atzeni@brandcompete.com
 ```
 
