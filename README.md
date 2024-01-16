@@ -60,7 +60,10 @@ models = client.get_models()
 
 In order to submit a query, the model must be passed as a parameter via id
 ```
-response:str = client.prompt(model_id=10, query="my question to AI-Model")
+response:str = client.prompt(
+    model_id=10,
+    query="my question to AI-Model"
+    )
 ```
 
 ### Prompting a query with file content
@@ -82,7 +85,8 @@ response:str = client.prompt(
     model_id=1, 
     query=query, 
     loader=Loader.PDF, 
-    file_path="./your_path/test.pdf")
+    file_path="./your_path/test.pdf"
+    )
 ```
 
 ### Possible loaders
