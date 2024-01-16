@@ -63,6 +63,21 @@ In order to submit a query, the model must be passed as a parameter via id
 response:str = client.prompt(model_id=10, query="my question to AI-Model")
 ```
 
+### Prompting a query with file content
+
+Pass specific file content to your prompt.
+Current available loaders:
+- loader.PDF
+- loader.EXCEL
+- loader.DOCX
+- loader.CSV
+
+```
+#example
+query="Please summarize the following text."
+    
+result = client.prompt(model_id=models[1].id,query=query, loader=Loader.PDF, file_path='./data/test.pdf' )
+```
 
 ## Frequently used AI-Models
 

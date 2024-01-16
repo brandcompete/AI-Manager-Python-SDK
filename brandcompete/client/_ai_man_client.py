@@ -76,7 +76,7 @@ class AI_ManServiceClient():
             documents = PDFReader().load_data(file=Path(file_path))
         if loader is Loader.CSV: 
             documents = SimpleCSVReader(encoding="utf-8").load_data(file=Path(file_path))
-        if loader is Loader.MS_WORD_DOCX:
+        if loader is Loader.DOCX:
             documents = DocxReader().load_data(file=Path(file_path))
         text = ""
 
