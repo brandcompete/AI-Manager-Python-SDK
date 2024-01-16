@@ -4,11 +4,17 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "AI-Manager-Python-SDK"
+authors = [
+  {name = "Thorsten Atzeni", email = "thorsten.atzeni@brandcompete.com"}
+]
+maintainers = [
+  {name = "Thorsten Atzeni", email = "thorsten.atzeni@brandcompete.com"}
+]
 description = "Service client to communicate with AI Man-API"
 version = "1.0.3"
 license = {file = "LICENSE"}
+requires-python = ">= 3.8"
 dependencies = [
-    'python>=3.8.1,<3.12',
     'dataclasses-json==0.6.3',
     'pyjwt==2.8.0',
     'setuptools==69.0.3',
@@ -16,13 +22,16 @@ dependencies = [
     'pypdf==3.17.4',
     'openpyxl==3.1.2',
     'docx2txt==0.8'
-
 ]
 classifiers = [
     "Programming Language :: Python :: 3",
     "Operating System :: OS Independent"
 ]
 readme = "README.md"
+
+[project.urls]
+Homepage = "https://www.brandcompete.com"
+Repository = "https://github.com/brandcompete/AI-Manager-Python-SDK"
 
 [tool.setuptools.packages]
 find = {} 
