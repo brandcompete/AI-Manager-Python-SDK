@@ -23,7 +23,7 @@ pip install -r requirements.txt
 
 ## Usage
 
-### Instantiate service client
+### Instantiate the service client
 
 The client authenticates itself for all requests via a JWT token. 
 To obtain a token, the client must log in to the corresponding API host via username and password.
@@ -41,7 +41,7 @@ client = AI_ManServiceClient(credential=token_credential)
 ```
 
 The client takes care of updating the token during the client's runtime if it has expired.
-The automatic refresh can be controlled via the optional parameter ```auto_refresh_token=True or False``` of the TokenCredential.
+The automatic refresh can be controlled via optional parameter ```auto_refresh_token=True or False``` of the TokenCredential.
 
 Example:
 ```
