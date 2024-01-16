@@ -65,13 +65,19 @@ response:str = client.prompt(model_id=10, query="my question to AI-Model")
 
 ### Prompting a query with file content
 
-Pass specific file content to your prompt.
-Current available loaders:
+You can pass a specific file content to your prompt.
+Current available loaders are:
 - loader.PDF
 - loader.EXCEL
 - loader.DOCX
 - loader.CSV
 
+#### Possible loaders
+
+NOTE: Feel free to contact us to enhance our SDK with these listed loaders:
+- https://llamahub.ai/?tab=loaders
+
+Mail to: thorsten.atzeni@brandcompete.com
 ```
 
 from brandcompete.core.classes import Loader
