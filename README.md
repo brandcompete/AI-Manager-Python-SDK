@@ -74,7 +74,7 @@ Current available loaders are:
 
 #### Possible loaders
 
-NOTE: Feel free to contact us to enhance our SDK with one of [these](https://github.com/user/repo/blob/branch/other_file.md) available loader.
+NOTE: Feel free to contact us to enhance our SDK with one of [these](https://llamahub.ai/?tab=loaders) available loader.
 Mail to: thorsten.atzeni@brandcompete.com
 ```
 
