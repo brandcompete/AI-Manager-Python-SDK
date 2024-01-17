@@ -27,7 +27,7 @@ pip install -r requirements.txt
 
 ## Usage
 
-### Instantiate service client
+### Instantiate the service client
 
 The client authenticates itself for all requests via a JWT token. 
 To obtain a token, the client must log in to the corresponding API host via username and password.
@@ -45,7 +45,7 @@ client = AI_ManServiceClient(credential=token_credential)
 ```
 
 The client takes care of updating the token during the client's runtime if it has expired.
-The automatic refresh can be controlled via the optional parameter ```auto_refresh_token=True or False``` of the TokenCredential.
+The automatic refresh can be controlled via optional parameter ```auto_refresh_token=True or False``` of the TokenCredential.
 
 Example:
 ```
@@ -64,13 +64,15 @@ models = client.get_models()
 
 In order to submit a query, the model must be passed as a parameter via id
 ```
-response:str = client.prompt(model_id=10, query="my question to AI-Model")
+response:str = client.prompt(
+    model_id=10,
+    query="my question to AI-Model")
 ```
 
 ### Prompting a query with file content
 
-Pass specific file content to your prompt.
-Current available loaders:
+You can pass a specific file content to your prompt.
+Current available loaders are:
 - loader.PDF
 - loader.EXCEL
 - loader.DOCX
@@ -79,15 +81,19 @@ Current available loaders:
 ```
 from brandcompete.core.classes import Loader
 
-query="Please summarize the following text."
+query="Please summarize the following text: "
     
-result = client.prompt(
+response:str = client.prompt(
     model_id=1, 
     query=query, 
     loader=Loader.PDF, 
     file_path="./your_path/test.pdf")
 ```
 
+### Possible loaders
+
+NOTE: Feel free to contact us to enhance our SDK with one of [these](https://llamahub.ai/?tab=loaders) available loader.
+Mail to: thorsten.atzeni@brandcompete.com
 ## Frequently used AI-Models
 
 - [ID: 1] MISTRAL                   - The Mistral 7B model released by Mistral AI
