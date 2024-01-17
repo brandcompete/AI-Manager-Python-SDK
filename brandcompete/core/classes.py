@@ -64,7 +64,7 @@ class PromptOptions:
     seed:int=0
     stop=None
     tfs_z:int=1
-    num_predict:int=128
+    num_predict:int=2048
     top_k:int=40
     top_p:float=0.9
 

@@ -83,9 +83,9 @@ class AI_ManServiceClient():
         for doc in documents:
             text += doc.get_text()
         
-        print(f"Fetched text out of Documen{file_path}\n")
+        print(f"Fetched text out of document: {file_path}\n")
         print(f"{text}\n")
-        print(f"Lenght: {len(text)}")
+        print(f"Amount chars: {len(text)}")
         return text
 
     def _perform_request(self, type: RequestType, route:str, data:dict = None) -> dict:
