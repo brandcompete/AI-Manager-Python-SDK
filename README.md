@@ -4,6 +4,10 @@
 
 Python version: >=3.8.1,<3.12
 
+## Example
+We have created an example (demo) project to demonstrate the use of the SDK within a project.
+The repository can found [here](https://github.com/brandcompete/AI-Manager-Usage-Example)
+
 ## How to install
 
 Inside your project folder (or python environment) you can install the SDK via pip
