@@ -54,7 +54,7 @@ class PromptOptions:
     mirostat:int=0
     mirostat_eta:float=0.1
     mirostat_tau:int=5
-    num_ctx:int=2048
+    num_ctx:int=4096
     num_gqa:int=8
     num_gpu:int=0
     num_thread:int=0
@@ -91,7 +91,7 @@ class Route(Enum):
 class Loader(Enum):
     PDF = "PDFReader",
     EXCEL = "PandasExcelReader",
-    MS_WORD_DOCX = "DocxReader",
+    DOCX = "DocxReader",
     CSV = "SimpleCSVReader"
 
 __all__ = [
