@@ -98,11 +98,11 @@ class AI_ManServiceClient():
         headers = {"accept": "application/json"}
         headers.update({"Authorization": f"Bearer {self.credential.access.token}"})
         if type == RequestType.GET:
-            response = requests.get(url=url, headers=headers)
+            response = requests.get(url=url, headers=headers, allow_redirects=True)
 
         if type == RequestType.POST:
             headers.update({"Content-Type": "application/json"})
-            response = requests.post(url=url, headers=headers, json=data)
+            response = requests.post(url=url, headers=headers, json=data, allow_redirects=True)
         
         if response.status_code != 200:
             raise Exception(f"[{response.status_code}] Reason: {response.reason}")

@@ -21,6 +21,10 @@ class Util:
         try:
             if not url.lower().startswith('http'):
                 url = "https://" + url
+            if url.lower().startswith("http://"):
+                url = url.replace("http://", "https://")
+            if url.lower().endswith("/"):
+                url = url[:-1]
         except AttributeError:
             raise ValueError("url must be a string.")
         parsed_url = urlparse(url.rstrip('/'))
