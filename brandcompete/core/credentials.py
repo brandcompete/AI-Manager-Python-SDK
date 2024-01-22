@@ -44,7 +44,7 @@ class TokenCredential():
                 "Content-Type": "application/json"
                 }
         url = f"{base_url}{Route.AUTH.value}"
-        response = requests.post(url=url, headers=headers, json=data)
+        response = requests.post(url=url, headers=headers, json=data, allow_redirects=True)
         if response.status_code != 200:
             raise Exception(f"[{response.status_code}] Reason: {response.reason}")
         
@@ -62,7 +62,7 @@ class TokenCredential():
         """
         base_url = Util.validate_url(cls.api_host)
         data = {}
-        response = requests.post(url=f"{base_url}{Route.AUTH_REFRESH.value}", json=data)
+        response = requests.post(url=f"{base_url}{Route.AUTH_REFRESH.value}", json=data, allow_redirects=True)
         if response.status_code != 200:
             raise Exception(f"[{response.status_code}] Reason: {response.reason}")
         
