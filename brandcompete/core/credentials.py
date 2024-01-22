@@ -19,8 +19,9 @@ class TokenCredential():
 
     def __init__(self, api_host_url:str, user_name:str, password:str, auto_refresh_token = True) -> None:
         self.auto_refresh_token = auto_refresh_token
+        self.api_host = Util.validate_url(api_host_url)
         self.access = self.get_token(api_host_url=api_host_url, user_name=user_name, password=password)
-        self.api_host = api_host_url
+        
         
 
     def get_token(cls, api_host_url:str, user_name:str, password:str) -> AccessToken:
@@ -37,12 +38,13 @@ class TokenCredential():
         Returns:
             AccessToken: AccessToken instance with expiration time in Unix time
         """
-        base_url = Util.validate_url(api_host_url)
+        
         data = {"userName": user_name, "userPassword": password}
         headers = {
                 "accept": "application/json", 
                 "Content-Type": "application/json"
                 }
+        base_url = Util.validate_url(api_host_url)
         url = f"{base_url}{Route.AUTH.value}"
         response = requests.post(url=url, headers=headers, json=data, allow_redirects=True)
         if response.status_code != 200:
@@ -60,10 +62,9 @@ class TokenCredential():
         Returns:
             AccessToken: AccessToken instance with expiration time in Unix time
         """
-        base_url = Util.validate_url(cls.api_host)
+        
         data = {}
-        print(f"Request-URL: {base_url}")
-        response = requests.post(url=f"{base_url}{Route.AUTH_REFRESH.value}", json=data, allow_redirects=True)
+        response = requests.post(url=f"{cls.api_host}{Route.AUTH_REFRESH.value}", json=data, allow_redirects=True)
         if response.status_code != 200:
             raise Exception(f"[{response.status_code}] Reason: {response.reason}")
         
