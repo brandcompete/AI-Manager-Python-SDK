@@ -1,7 +1,6 @@
 import requests, json
 from enum import Enum
 #from llama_index import download_loader
-from llama_index.schema import Document
 from llama_hub.file.docx import DocxReader
 from llama_hub.file.pdf import PDFReader
 from llama_hub.file.pandas_excel import PandasExcelReader
@@ -69,7 +68,7 @@ class AI_ManServiceClient():
 
     def get_document_content(self, loader:Loader, file_path:str) -> str:
         
-        documents: List[Document] = None
+        documents = None
         if loader is Loader.EXCEL:
             documents = PandasExcelReader(pandas_config={"header": 0}).load_data(file=Path(file_path))
         if loader is Loader.PDF:
