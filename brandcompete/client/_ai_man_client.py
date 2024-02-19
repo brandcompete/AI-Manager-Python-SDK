@@ -1,6 +1,6 @@
 import requests, json
 from enum import Enum
-from llama_index import download_loader
+#from llama_index import download_loader
 from llama_index.schema import Document
 from llama_hub.file.docx import DocxReader
 from llama_hub.file.pdf import PDFReader
