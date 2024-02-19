@@ -18,8 +18,7 @@ dependencies = [
     'dataclasses-json==0.6.3',
     'pyjwt==2.8.0',
     'setuptools==69.0.3',
-    'llama-hub==0.0.71',
-    'llama-index==0.9.48',
+    'llama-index==0.10.6',
     'pypdf==3.17.4',
     'openpyxl==3.1.2',
     'docx2txt==0.8'
