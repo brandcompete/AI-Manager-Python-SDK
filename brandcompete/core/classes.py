@@ -17,7 +17,6 @@ class AI_Model:
     defaultModelTagId: int
     amountOfPulls: str
     amountOfTags: int
-    lastUpdate: str
     requiredMemory:str
     size: 0
 

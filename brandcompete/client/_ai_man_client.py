@@ -1,10 +1,6 @@
 import requests, json
 from enum import Enum
-#from llama_index import download_loader
-from llama_hub.file.docx import DocxReader
-from llama_hub.file.pdf import PDFReader
-from llama_hub.file.pandas_excel import PandasExcelReader
-from llama_hub.file.simple_csv import SimpleCSVReader
+from llama_index.core import SimpleDirectoryReader
 from pathlib import Path
 from typing import (
     Any, Dict, List, Optional, Union,
@@ -69,22 +65,14 @@ class AI_ManServiceClient():
     def get_document_content(self, loader:Loader, file_path:str) -> str:
         
         documents = None
-        if loader is Loader.EXCEL:
-            documents = PandasExcelReader(pandas_config={"header": 0}).load_data(file=Path(file_path))
-        if loader is Loader.PDF:
-            documents = PDFReader().load_data(file=Path(file_path))
-        if loader is Loader.CSV: 
-            documents = SimpleCSVReader(encoding="utf-8").load_data(file=Path(file_path))
-        if loader is Loader.DOCX:
-            documents = DocxReader().load_data(file=Path(file_path))
+        documents = SimpleDirectoryReader(input_files=[file_path]).load_data()
+       
         text = ""
 
         for doc in documents:
             text += doc.get_text()
         
-        print(f"Fetched text out of document: {file_path}\n")
-        print(f"{text}\n")
-        print(f"Amount chars: {len(text)}")
+        print(f"Fetched amount chars: {len(text)}")
         return text
 
     def _perform_request(self, type: RequestType, route:str, data:dict = None) -> dict:
