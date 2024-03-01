@@ -1,6 +1,8 @@
+
 import requests, json
 from enum import Enum
 from llama_index.core import SimpleDirectoryReader
+from llama_index.core import download_loader, Document
 from pathlib import Path
 from typing import (
     Any, Dict, List, Optional, Union,
@@ -51,7 +53,7 @@ class AI_ManServiceClient():
         prompt = Prompt()
 
         if loader is not None:
-            document_text = self.get_document_content(loader=loader, file_path=file_path)
+            document_text = self.get_document_content( file_path=file_path)
             query += f'{document_text}'
             
         prompt.prompt = query
@@ -62,11 +64,28 @@ class AI_ManServiceClient():
         response = self._perform_request(RequestType.POST,route=route, data=prompt_dict)
         return response['ResponseText']
 
-    def get_document_content(self, loader:Loader, file_path:str) -> str:
-        
+    def get_document_content(self, file_path:str) -> str:
+    
+    
+        DocxReader = download_loader("DocxReader")
+        PptxReader = download_loader("PptxReader")
+        PandasExcelReader = download_loader("PandasExcelReader")
+        PDFReader = download_loader("PDFReader")
         documents = None
-        documents = SimpleDirectoryReader(input_files=[file_path]).load_data()
-       
+
+
+        dir_reader = SimpleDirectoryReader(
+            input_files=[file_path],
+            file_extractor={
+                ".xlsx": PandasExcelReader(),
+                ".xls": PandasExcelReader(),
+                ".docx": DocxReader(),
+                ".pptx": PptxReader(caption_images=False),
+                ".ppt": PptxReader(caption_images=False),
+                ".pdf": PDFReader()})
+        documents = dir_reader.load_data()
+
+        
         text = ""
 
         for doc in documents:
