@@ -1,5 +1,5 @@
 from urllib.parse import urlparse
-import time
+import time, os
 
 
 class Util:
@@ -40,6 +40,10 @@ class Util:
     @classmethod
     def is_token_expired(cls, expire_unix_time: int) -> bool:
         return cls.get_current_unix_time() >= expire_unix_time
+    
+    @classmethod
+    def get_file_name(cls, file_path:str) -> str:
+        return os.path.basename(file_path)
 
 __all__ = [
     "Util"

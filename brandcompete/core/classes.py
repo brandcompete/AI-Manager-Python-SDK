@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum
+from typing import List
 from dataclasses_json import dataclass_json, LetterCase
 
 @dataclass_json(letter_case=LetterCase.CAMEL)
@@ -79,7 +80,12 @@ class Prompt:
     projectTabId:int=1
     userId:int=1
     verbose:int=True
-    
+
+@dataclass_json
+@dataclass   
+class Attachment:
+    name:str=""
+    base64:str=""
 
 class Route(Enum):
     GET_MODELS='/api/v1/models'

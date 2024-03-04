@@ -1,5 +1,5 @@
-
-import requests, json
+import requests, json, base64
+import pandas as pd
 from enum import Enum
 from llama_index.core import SimpleDirectoryReader
 from llama_index.core import download_loader, Document
@@ -9,9 +9,11 @@ from typing import (
     TYPE_CHECKING
 )
 
+from brandcompete.core.util import Util
 from brandcompete.core.credentials import TokenCredential
 from brandcompete.core.classes import (
-    AI_Model, 
+    AI_Model,
+    Attachment, 
     PromptOptions, 
     Route, 
     Filter, 
@@ -19,7 +21,6 @@ from brandcompete.core.classes import (
     Loader 
 )
 
-from brandcompete.core.util import Util
 
 class RequestType(Enum):
     POST = 0,
@@ -29,7 +30,7 @@ class RequestType(Enum):
 
 class AI_ManServiceClient():
 
-    def __init__(self, credential:TokenCredential , **kwargs: Any) -> None:
+    def __init__(self, credential:TokenCredential) -> None:
         
         self.credential = credential   
         
@@ -44,6 +45,19 @@ class AI_ManServiceClient():
         
         return models
 
+    def prompt_with_attachments(self, model_id:int, query:str, file_path:str) -> str:
+        prompt_options = PromptOptions()
+        prompt = Prompt()
+        prompt.prompt = query
+        prompt_dict = prompt.to_dict()
+        prompt_option_dict = prompt_options.to_dict()
+        prompt_dict['options'] = prompt_option_dict
+        route = Route.PROMPT.value.replace("model_id", f"{model_id}")
+
+        response = self._perform_request(RequestType.POST,route=route, data=prompt_dict)
+        return response['ResponseText']
+        pass
+
     def prompt(self, model_id:int, query:str, loader: Loader = None, file_path:str = None) -> str:
 
         if loader is not None and file_path is None:
@@ -51,41 +65,44 @@ class AI_ManServiceClient():
 
         prompt_options = PromptOptions()
         prompt = Prompt()
-
-        if loader is not None:
-            document_text = self.get_document_content( file_path=file_path)
-            query += f'{document_text}'
-            
         prompt.prompt = query
         prompt_dict = prompt.to_dict()
         prompt_option_dict = prompt_options.to_dict()
         prompt_dict['options'] = prompt_option_dict
+
+        if loader is not None:
+            document_text = self.get_document_content( file_path=file_path, loader=loader)            
+            encoded_contents = base64.b64encode(str.encode(document_text))
+            attachment = Attachment()
+            attachment.name = Util.get_file_name(file_path=file_path)
+            attachment.base64 = encoded_contents.decode()
+            prompt_dict['attachments'] = [attachment.to_dict()] 
+        
         route = Route.PROMPT.value.replace("model_id", f"{model_id}")
         response = self._perform_request(RequestType.POST,route=route, data=prompt_dict)
         return response['ResponseText']
 
-    def get_document_content(self, file_path:str) -> str:
+    def get_document_content(self, file_path:str, loader: Loader = None) -> str:
     
-    
+        if loader == Loader.EXCEL:
+            df = pd.read_excel(file_path)
+            return df.to_csv(sep='\t', index=False)
+        
+        if loader == Loader.CSV:
+            df = pd.read_csv(file_path)
+            return df.to_csv(sep='\t', index=False)
+            
         DocxReader = download_loader("DocxReader")
-        PptxReader = download_loader("PptxReader")
-        PandasExcelReader = download_loader("PandasExcelReader")
         PDFReader = download_loader("PDFReader")
-        documents = None
-
+        documents:List[Document] = None
 
         dir_reader = SimpleDirectoryReader(
             input_files=[file_path],
             file_extractor={
-                ".xlsx": PandasExcelReader(),
-                ".xls": PandasExcelReader(),
                 ".docx": DocxReader(),
-                ".pptx": PptxReader(caption_images=False),
-                ".ppt": PptxReader(caption_images=False),
                 ".pdf": PDFReader()})
         documents = dir_reader.load_data()
 
-        
         text = ""
 
         for doc in documents:

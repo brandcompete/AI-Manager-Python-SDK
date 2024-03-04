@@ -11,17 +11,18 @@ maintainers = [
   {name = "Thorsten Atzeni", email = "thorsten.atzeni@brandcompete.com"}
 ]
 description = "Service client to communicate with AI Man-API"
-version = "1.0.10"
+version = "1.0.11"
 license = {file = "LICENSE"}
 requires-python = ">= 3.8"
 dependencies = [
     'dataclasses-json==0.6.3',
     'pyjwt==2.8.0',
     'setuptools==69.1.0',
-    'llama-index==0.10.6', 
-    'pypdf==3.17.4',
-    'openpyxl==3.1.2',
-    'docx2txt==0.8'
+    'llama-index==0.10.14', 
+    'pandas',
+    'pypdf',
+    'openpyxl',
+    'docx2txt'
 ]
 classifiers = [
     "Programming Language :: Python :: 3",
