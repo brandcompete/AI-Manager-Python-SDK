@@ -45,23 +45,11 @@ class AI_ManServiceClient():
         
         return models
 
-    def prompt_with_attachments(self, model_id:int, query:str, file_path:str) -> str:
-        prompt_options = PromptOptions()
-        prompt = Prompt()
-        prompt.prompt = query
-        prompt_dict = prompt.to_dict()
-        prompt_option_dict = prompt_options.to_dict()
-        prompt_dict['options'] = prompt_option_dict
-        route = Route.PROMPT.value.replace("model_id", f"{model_id}")
+  
+    def prompt(self, model_id:int, query:str, loader: Loader = None, file_append_to_query:str = None, files_to_rag:List[str] = None) -> dict:
 
-        response = self._perform_request(RequestType.POST,route=route, data=prompt_dict)
-        return response['ResponseText']
-        pass
-
-    def prompt(self, model_id:int, query:str, loader: Loader = None, file_path:str = None) -> str:
-
-        if loader is not None and file_path is None:
-            raise ValueError(f"Missing Argument: file_path (If a loader is passed as argument, you need to set a valid file_path)")            
+        if loader is not None and file_append_to_query is None and files_to_rag is None:
+            raise ValueError(f"Missing Argument: file_append_to_query or files_to_rag")            
 
         prompt_options = PromptOptions()
         prompt = Prompt()
@@ -71,16 +59,27 @@ class AI_ManServiceClient():
         prompt_dict['options'] = prompt_option_dict
 
         if loader is not None:
-            document_text = self.get_document_content( file_path=file_path, loader=loader)            
-            encoded_contents = base64.b64encode(str.encode(document_text))
-            attachment = Attachment()
-            attachment.name = Util.get_file_name(file_path=file_path)
-            attachment.base64 = encoded_contents.decode()
-            prompt_dict['attachments'] = [attachment.to_dict()] 
+            if file_append_to_query is not None:
+                document_text = self.get_document_content(file_path=file_append_to_query, loader=loader)
+                query += f" {document_text}"
+            
+            if files_to_rag is not None:
+            
+                attachments = list()
+                for file in files_to_rag:
+                    content = self.get_document_content(file_path=file, loader=loader)            
+                    encoded_contents = base64.b64encode(str.encode(content))
+                    attachment = Attachment()
+                    attachment.name = Util.get_file_name(file_path=file)
+                    attachment.base64 = encoded_contents.decode()
+                    attachments.append(attachment.to_dict())
+                
+                prompt_dict['attachments'] = attachments
+            
         
         route = Route.PROMPT.value.replace("model_id", f"{model_id}")
         response = self._perform_request(RequestType.POST,route=route, data=prompt_dict)
-        return response['ResponseText']
+        return response
 
     def get_document_content(self, file_path:str, loader: Loader = None) -> str:
     
