@@ -51,13 +51,7 @@ class AI_ManServiceClient():
         if loader is not None and file_append_to_query is None and files_to_rag is None:
             raise ValueError(f"Missing Argument: file_append_to_query or files_to_rag")            
 
-        prompt_options = PromptOptions()
-        prompt = Prompt()
-        prompt.prompt = query
-        prompt_dict = prompt.to_dict()
-        prompt_option_dict = prompt_options.to_dict()
-        prompt_dict['options'] = prompt_option_dict
-
+        attachments = list()
         if loader is not None:
             if file_append_to_query is not None:
                 document_text = self.get_document_content(file_path=file_append_to_query, loader=loader)
@@ -65,7 +59,6 @@ class AI_ManServiceClient():
             
             if files_to_rag is not None:
             
-                attachments = list()
                 for file in files_to_rag:
                     content = self.get_document_content(file_path=file, loader=loader)            
                     encoded_contents = base64.b64encode(str.encode(content))
@@ -74,9 +67,16 @@ class AI_ManServiceClient():
                     attachment.base64 = encoded_contents.decode()
                     attachments.append(attachment.to_dict())
                 
-                prompt_dict['attachments'] = attachments
-            
-        
+                
+        prompt_options = PromptOptions()
+        prompt = Prompt() 
+        prompt.prompt = query
+        prompt_dict = prompt.to_dict()
+        prompt_option_dict = prompt_options.to_dict()
+        prompt_dict['options'] = prompt_option_dict
+        if len(attachments) > 0:
+            prompt_dict['attachments'] = attachments
+
         route = Route.PROMPT.value.replace("model_id", f"{model_id}")
         response = self._perform_request(RequestType.POST,route=route, data=prompt_dict)
         return response
