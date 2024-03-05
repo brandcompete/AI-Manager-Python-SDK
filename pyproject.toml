@@ -15,9 +15,9 @@ version = "1.0.13"
 license = {file = "LICENSE"}
 requires-python = ">= 3.8"
 dependencies = [
-    'dataclasses-json==0.6.3',
-    'pyjwt==2.8.0',
-    'setuptools==69.1.0',
+    'dataclasses-json',
+    'pyjwt',
+    'setuptools',
     'llama-index', 
     'pandas',
     'pypdf',
