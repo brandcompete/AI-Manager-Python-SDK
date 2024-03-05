@@ -60,7 +60,7 @@ This method returns a list of type: AI_Model (```List[AI_Model]```)
 models = client.get_models()
 ```
 
-### Prompting a query to a specific model
+### Prompting a simple query to a specific model
 
 In order to submit a query, the model must be passed as a parameter via id
 ```
@@ -69,7 +69,7 @@ response:str = client.prompt(
     query="my question to AI-Model")
 ```
 
-### Prompting a query with file content
+### Prompting a query with appended file content
 
 You can pass a specific file content to your prompt.
 Current available loaders are:
@@ -83,11 +83,44 @@ from brandcompete.core.classes import Loader
 
 query="Please summarize the following text: "
     
-response:str = client.prompt(
+response:dict = client.prompt(
     model_id=1, 
     query=query, 
     loader=Loader.PDF, 
-    file_path="./your_path/test.pdf")
+    file_append_to_query="path/to/file.pdf")
+```
+
+### Prompting a query with appended file content and raging files
+
+Description about raging coming soon
+
+```
+query="your question or order..."
+    
+response:dict = client.prompt(
+    model_id=1, 
+    query=query, 
+    loader=Loader.PDF, 
+    file_append_to_query="path/to/file.pdf",
+    files_to_rag=["file/path/1.pdf", "file/path/2.pdf"]
+    )
+   
+```
+
+### Prompting a query with raging files only
+
+Description about raging coming soon
+
+```
+query="your question or order..."
+    
+response:dict = client.prompt(
+    model_id=1, 
+    query=query, 
+    loader=Loader.PDF, 
+    files_to_rag=["file/path/1.pdf", "file/path/2.pdf"]
+    )
+   
 ```
 
 ### Possible loaders
