@@ -168,4 +168,3 @@ Mail to: thorsten.atzeni@brandcompete.com
 - [ID: 37] YARN-LLAMA2               - An extension of Llama 2 that supports a context of up to 128k tokens.
 - [ID: 38] XWINLM                    - Conversational model based on Llama 2 that performs competitively on various benchmarks.
 
-

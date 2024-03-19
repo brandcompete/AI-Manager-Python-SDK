@@ -46,7 +46,7 @@ class AI_ManServiceClient():
         return models
 
   
-    def prompt(self, model_id:int, query:str, loader: Loader = None, file_append_to_query:str = None, files_to_rag:List[str] = None) -> dict:
+    def prompt(self, model_id:int, query:str, loader: Loader = None, file_append_to_query:str = None, files_to_rag:List[str] = None, prompt_options:PromptOptions = None) -> dict:
 
         if loader is not None and file_append_to_query is None and files_to_rag is None:
             raise ValueError(f"Missing Argument: file_append_to_query or files_to_rag")            
@@ -67,8 +67,8 @@ class AI_ManServiceClient():
                     attachment.base64 = encoded_contents.decode()
                     attachments.append(attachment.to_dict())
                 
-                
-        prompt_options = PromptOptions()
+        if prompt_options is None:        
+            prompt_options = PromptOptions()
         prompt = Prompt() 
         prompt.prompt = query
         prompt_dict = prompt.to_dict()
