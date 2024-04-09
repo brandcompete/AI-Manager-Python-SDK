@@ -33,14 +33,14 @@ The client authenticates itself for all requests via a JWT token.
 To obtain a token, the client must log in to the corresponding API host via username and password.
 
 ```
-IMPORTANT NOTE: Use only the base url of the api (without slash at the end and without /api/v1/ etc.)
+IMPORTANT NOTE: Use only the base url of the AIMan-API (without slash at the end and without /api/v1/ etc.)
 ```
 
 ```
 from brandcompete.core.credentials import TokenCredential
 from brandcompete.client import AI_ManServiceClient
 
-url = "https://aiman-api-test.brandcompete.com" (<-- only base url)
+url = "https://aiman-api-test.brandcompete.com" (<-- base url only!)
 username = "john@doe.com"
 pw = "top_secret"
 
