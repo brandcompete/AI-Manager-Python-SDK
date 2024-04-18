@@ -75,11 +75,19 @@ class Prompt:
     modelTagId:int=0
     raw:bool=False
     stream:bool=False
-    context:str=""
     projectId:int=1
     projectTabId:int=1
     userId:int=1
     verbose:int=True
+'''
+"prompt": "This is where the prompt text goes.",
+  "attachments": [],
+  "datasourceId": 0,
+  "raw": false,
+  "keepAlive": "5m",
+  "keepContext": true,
+'''
+
 
 @dataclass_json
 @dataclass   

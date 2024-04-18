@@ -1,5 +1,6 @@
 import requests, json, base64
 import pandas as pd
+import PyPDF2
 from enum import Enum
 from llama_index.core import SimpleDirectoryReader
 from llama_index.core import download_loader, Document
@@ -90,16 +91,22 @@ class AI_ManServiceClient():
         if loader == Loader.CSV:
             df = pd.read_csv(file_path)
             return df.to_csv(sep='\t', index=False)
-            
+        
+        if loader == Loader.PDF:
+            pdf_reader = PyPDF2.PdfReader(file_path)
+            text = ""
+            for i in range(len(pdf_reader.pages)):
+                page = pdf_reader.pages[i]
+                text += page.extract_text()
+            return text
         DocxReader = download_loader("DocxReader")
-        PDFReader = download_loader("PDFReader")
+       
         documents:List[Document] = None
 
         dir_reader = SimpleDirectoryReader(
             input_files=[file_path],
             file_extractor={
-                ".docx": DocxReader(),
-                ".pdf": PDFReader()})
+                ".docx": DocxReader()})
         documents = dir_reader.load_data()
 
         text = ""
