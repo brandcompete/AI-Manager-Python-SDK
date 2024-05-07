@@ -1,11 +1,14 @@
+from typing import Optional
 from urllib.parse import urlparse
 import time, os
+
+from brandcompete.core.classes import Loader
 
 
 class Util:
 
     @classmethod
-    def validate_url(cls, url:str) -> str:
+    def validate_url(cls, url:str,check_only = False) -> str|bool:
         """Validate and parse an url
 
         Args:
@@ -29,8 +32,12 @@ class Util:
             raise ValueError("url must be a string.")
         parsed_url = urlparse(url.rstrip('/'))
         if not parsed_url.netloc:
+            if check_only == True:
+                return False
             raise ValueError("Invalid URL: {}".format(url))
         
+        if check_only == True:
+            return True
         return url
 
     @classmethod
@@ -44,6 +51,25 @@ class Util:
     @classmethod
     def get_file_name(cls, file_path:str) -> str:
         return os.path.basename(file_path)
+    
+    @classmethod
+    def get_file_name_and_ext(cls, file_path:str) -> tuple:
+       
+        filename, file_extension = os.path.splitext(file_path)
+        return cls.get_file_name(file_path=file_path), file_extension.replace(".","")
+
+    @classmethod
+    def get_loader_by_ext(cls, file_ext:str) -> tuple:
+        loader = None
+        if file_ext == "pdf":
+            return Loader.PDF, "application/pdf"
+        if file_ext == "csv":
+            return Loader.CSV, "application/csv"
+        if file_ext == "xlsx":
+            return Loader.EXCEL, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        if file_ext == "docx":
+            return Loader.DOCX, ""
+        return None
 
 __all__ = [
     "Util"

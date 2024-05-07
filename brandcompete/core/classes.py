@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from enum import Enum
-from typing import List
+from typing import List, Optional
+
 from dataclasses_json import dataclass_json, LetterCase
 
 @dataclass_json(letter_case=LetterCase.CAMEL)
@@ -79,16 +80,32 @@ class Prompt:
     projectTabId:int=1
     userId:int=1
     verbose:int=True
-'''
-"prompt": "This is where the prompt text goes.",
-  "attachments": [],
-  "datasourceId": 0,
-  "raw": false,
-  "keepAlive": "5m",
-  "keepContext": true,
-'''
+    attachments:list = None
+    keepContext:bool = True
+    keepAlive:str = "5m"
+    datasourceId:int = 0 
 
+@dataclass_json
+@dataclass
+class DataSource:
+    name:str
+    summary:str
+    id:Optional[int] = -1
+    categories: Optional[List[str]] = None
+    tags: Optional[List[str]] = None
+    assocContexts: Optional[list] = None
+    media: Optional[list] = None
+    status:Optional[int] = -1
+    mediaCount:Optional[int] = -1
+    ownerId:Optional[int] = -1
+    created:Optional[str] = None
+    modified:Optional[str] = None
 
+@dataclass_json
+@dataclass
+class Media:
+    base64:str
+    
 @dataclass_json
 @dataclass   
 class Attachment:
@@ -100,12 +117,14 @@ class Route(Enum):
     AUTH= '/api/v1/auth/authenticate'
     AUTH_REFRESH = '/api/v1/auth/refresh'
     PROMPT = '/api/v1/models/model_id/prompt'
+    DATA_SOURCE = '/api/v1/datasources'
 
 class Loader(Enum):
     PDF = "PDFReader",
     EXCEL = "PandasExcelReader",
     DOCX = "DocxReader",
-    CSV = "SimpleCSVReader"
+    CSV = "SimpleCSVReader",
+    URL = "url"
 
 __all__ = [
 
