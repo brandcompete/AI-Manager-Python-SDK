@@ -105,8 +105,20 @@ class AI_ManServiceClient():
             RequestType.POST, route=route, data=prompt_dict)
         return response
 
-    def prompt_on_datasource(self, datasource_id:int, query:str) -> str:
-        pass
+    def prompt_on_datasource(self, datasource_id:int, model_tag_id:int, query:str, prompt_options:PromptOptions = None) -> str:
+        if prompt_options is None:
+            prompt_options = PromptOptions()
+        prompt = Prompt()
+        prompt.prompt = query
+        prompt.datasourceId = datasource_id
+        prompt_dict = prompt.to_dict()
+        prompt_option_dict = prompt_options.to_dict()
+        prompt_dict['options'] = prompt_option_dict
+        
+        route = f"{Route.PROMPT_WIHT_DATASOURCE.value}/{model_tag_id}"
+        response = self._perform_request(
+            RequestType.POST, route=route, data=prompt_dict)
+        return response
 
     def get_document_content(self, file_path: str, loader: Loader = None) -> str:
 
