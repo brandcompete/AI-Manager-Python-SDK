@@ -151,8 +151,6 @@ class AI_ManServiceClient():
 
         for doc in documents:
             text += doc.get_text()
-
-        
         return text
     
     def fetch_all_datasources(self) -> List[DataSource]:
@@ -200,11 +198,31 @@ class AI_ManServiceClient():
                 return datasource["id"]
         return -1
         
-    def delete_datasource(self, id:int) -> int:
+    def delete_datasource(self, id:int) -> bool:
+        """Delete a specific datasource by id
+
+        Args:
+            id (int): the datasource id
+
+        Returns:
+            bool: success true or false
+        """
         code:int = self._perform_request(RequestType.DELETE, f"{Route.DATA_SOURCE.value}/{id}" )
         return code
     
-    def add_documents(self, data_source_id:int, sources:List[str] ) -> None:
+    def add_documents(self, data_source_id:int, sources:List[str] ) -> DataSource:
+        """Add one or more documents (files, urls) to an datasource
+
+        Args:
+            data_source_id (int): the datasource id
+            sources (List[str]): list of file paths or urls
+
+        Raises:
+            Exception: If datasource not exists
+
+        Returns:
+            DataSource: the datasource with all added documents (media list)
+        """
         datasource:DataSource = self.get_datasource_by_id(id=data_source_id)
         
         for entry in sources:
@@ -222,8 +240,17 @@ class AI_ManServiceClient():
             #datasource.media.append({"base64":contentBase64.decode(), "name":filename})
             datasource.media.append({"base64":contentBase64.decode(), "name":filename, "mime_type": mime_type, "size":size_in_bytes * 10})
         return self.update_datasource(datasource=datasource)
-        
-    def update_datasource(self, datasource:DataSource)->bool:
+    
+    
+    def update_datasource(self, datasource:DataSource)-> DataSource:
+        """Update an existing datasource
+
+        Args:
+            datasource (DataSource): The datasource to update
+
+        Returns:
+            DataSource: Updated datasource
+        """
         data = {
             "name": datasource.name,
             "summary": datasource.summary,
@@ -237,7 +264,19 @@ class AI_ManServiceClient():
 
             
     def _perform_request(self, type: RequestType, route: str, data: dict = None) -> dict:
+        """Warning. This method is private and should not be called manually
 
+        Args:
+            type (RequestType): Enum of RequestTypes (GET, POST, PUT and DELETE)
+            route (str): _description_
+            data (dict, optional): _description_. Defaults to None.
+
+        Raises:
+            Exception: _description_
+
+        Returns:
+            dict: _description_
+        """
         if self.credential.auto_refresh_token and Util.is_token_expired(self.credential.access.expires_on):
             self.credential.refresh_access_token()
 
