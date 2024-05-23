@@ -168,7 +168,3 @@ client.prompt_on_datasource(
     query="can you please summarize the content?", 
     prompt_options = None)
 ```
-### Possible loaders
-
-NOTE: Feel free to contact us to enhance our SDK with one of [these](https://llamahub.ai/?tab=loaders) available loader.
-Mail to: thorsten.atzeni@brandcompete.com
