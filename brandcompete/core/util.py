@@ -8,7 +8,11 @@ from brandcompete.core.classes import Loader
 class Util:
 
     @classmethod
+<<<<<<< HEAD
     def validate_url(cls, url:str,check_only = False) :
+=======
+    def validate_url(cls, url:str,check_only = False):
+>>>>>>> d54cced0c7091c5d0eed5faf005d070336c68607
         """Validate and parse an url
 
         Args:
