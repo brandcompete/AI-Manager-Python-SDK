@@ -53,7 +53,11 @@ The automatic refresh can be controlled via optional parameter ```auto_refresh_t
 
 Example:
 ```
-token_credential = TokenCredential(api_host_url=url, user_name=username, password=pw, auto_refresh_token=True)
+token_credential = TokenCredential(
+    api_host_url=url, 
+    user_name=username, 
+    password=pw, 
+    auto_refresh_token=True)
 ```
 
 ### Fetching available AI-Models
