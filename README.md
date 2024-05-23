@@ -127,6 +127,51 @@ response:dict = client.prompt(
    
 ```
 
+### Raging with datasources and documents
+## Datasource
+Init a new datasource (minimum requirements - name and summary)
+```
+datasource_id = client.init_new_datasource(
+    name="Test datasource", 
+    summary="New datasource for uploading some documents")
+```
+Or init a new datasource with a list of tags and categories
+```
+datasource_id = client.init_new_datasource(
+    name="Test datasource", 
+    summary="New datasource for uploading documents", 
+    tags=["tagA","tagB", "etc"], 
+    categories=["catA","catB","etc"])
+```
+Fetch all datasources (associated to my account)
+Status can be: 
+- (2)ready
+- (1)indexing
+- (0)pending
+
+```
+datasources = client.fetch_all_datasources()
+for source in datasources:
+    print(f"{source.id}")
+    print(f"{source.name}")
+    print(f"{source.status}")
+```
+## Documents
+Add multiple documents into a datasource (can be url or file)
+```
+client.add_documents(
+    data_source_id=your_ds_id, 
+    sources=["path/to_my_data/test.pdf", "https://www.brandcompete.com"] )
+```
+## Prompt on datasource context
+Prompt in conjunction with a datasource id. You have to use the defaultModelTagId instead of the id.
+```    
+client.prompt_on_datasource(
+    datasource_id=datasource_id, 
+    model_tag_id=200, 
+    query="can you please summarize the content?", 
+    prompt_options = None)
+```
 ### Possible loaders
 
 NOTE: Feel free to contact us to enhance our SDK with one of [these](https://llamahub.ai/?tab=loaders) available loader.
