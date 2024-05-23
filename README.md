@@ -143,7 +143,7 @@ datasource_id = client.init_new_datasource(
     tags=["tagA","tagB", "etc"], 
     categories=["catA","catB","etc"])
 ```
-Fetch all datasources (associated to my account)
+Fetch all datasources (associated to my account).
 Status can be: 
 - (2)ready
 - (1)indexing
