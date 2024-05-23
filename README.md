@@ -96,8 +96,6 @@ response:dict = client.prompt(
 
 ### Prompting a query with appended file content and raging files
 
-Description about raging coming soon
-
 ```
 query="your question or order..."
     
@@ -112,8 +110,6 @@ response:dict = client.prompt(
 ```
 
 ### Prompting a query with raging files only
-
-Description about raging coming soon
 
 ```
 query="your question or order..."
@@ -144,7 +140,7 @@ datasource_id = client.init_new_datasource(
     categories=["catA","catB","etc"])
 ```
 Fetch all datasources (associated to my account).
-Status can be: 
+Possible status: 
 - (2)ready
 - (1)indexing
 - (0)pending
