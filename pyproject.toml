@@ -11,7 +11,7 @@ maintainers = [
   {name = "Thorsten Atzeni", email = "thorsten.atzeni@brandcompete.com"}
 ]
 description = "Service client to communicate with AI Man-API"
-version = "1.0.20"
+version = "1.0.21"
 license = {file = "LICENSE"}
 requires-python = ">= 3.8"
 dependencies = [

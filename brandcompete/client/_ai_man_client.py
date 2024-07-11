@@ -75,9 +75,16 @@ class AI_ManServiceClient():
         attachments = list()
         if loader is not None:
             if file_append_to_query is not None:
-                document_text = self.get_document_content(
+                doc_content = self.get_document_content(
                     file_path=file_append_to_query, loader=loader)
-                query += f" {document_text}"
+                if(loader == Loader.IMAGE):
+                    encoded_contents = base64.b64encode(doc_content)
+                    attachment = Attachment()
+                    attachment.name = Util.get_file_name(file_path=file_append_to_query)
+                    attachment.base64 = encoded_contents.decode()
+                    attachments.append(attachment.to_dict())
+                else:
+                    query += f" {doc_content}"
 
             if files_to_rag is not None:
 
@@ -126,6 +133,10 @@ class AI_ManServiceClient():
             df = pd.read_excel(file_path)
             return df.to_csv(sep='\t', index=False)
 
+        if loader == Loader.IMAGE:
+            with open(file_path, "rb") as imageFile:
+               return imageFile.read()
+           
         if loader == Loader.CSV:
             df = pd.read_csv(file_path)
             return df.to_csv(sep='\t', index=False)

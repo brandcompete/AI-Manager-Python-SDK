@@ -125,7 +125,8 @@ class Loader(Enum):
     EXCEL = "PandasExcelReader",
     DOCX = "DocxReader",
     CSV = "SimpleCSVReader",
-    URL = "url"
+    URL = "url",
+    IMAGE = "img"
 
 __all__ = [
 
