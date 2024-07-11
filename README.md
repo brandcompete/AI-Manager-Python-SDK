@@ -85,17 +85,30 @@ Current available loaders are:
 - loader.EXCEL
 - loader.DOCX
 - loader.CSV
+- loader.IMAGE
 
+#### PDF example
 ```
 from brandcompete.core.classes import Loader
 
-query="Please summarize the following text: "
-    
+query="Please summarize the following text: "  
 response:dict = client.prompt(
     model_id=1, 
     query=query, 
     loader=Loader.PDF, 
     file_append_to_query="path/to/file.pdf")
+```
+
+#### Image example
+```
+from brandcompete.core.classes import Loader
+
+query="describe what you see on the picture."  
+response:dict = client.prompt(
+    model_id=21, 
+    query=query, 
+    loader=Loader.IMAGE, 
+    file_append_to_query="path/to/file.png")
 ```
 
 ### Prompting a query with appended file content and raging files
