@@ -69,6 +69,8 @@ class Util:
             return Loader.EXCEL, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         if file_ext == "docx":
             return Loader.DOCX, ""
+        if file_ext == "png" or file_ext == "tif" or file_ext == "jpeg" or file_ext == "jpg":
+            return Loader.IMAGE, f"image/{file_ext}", 
         return None
 
 __all__ = [
