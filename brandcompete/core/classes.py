@@ -68,6 +68,8 @@ class PromptOptions:
     num_predict:int=2048
     top_k:int=40
     top_p:float=0.9
+    raw:bool = False
+    keep_context:bool = True
 
 @dataclass_json
 @dataclass

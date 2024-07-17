@@ -106,7 +106,10 @@ class AI_ManServiceClient():
         prompt_dict['options'] = prompt_option_dict
         if len(attachments) > 0:
             prompt_dict['attachments'] = attachments
-
+        
+        prompt_dict['raw'] = prompt_options.raw
+        prompt_dict['keepContext'] = prompt_options.keep_context
+        
         route = Route.PROMPT.value.replace("model_id", f"{model_id}")
         response = self._perform_request(
             RequestType.POST, route=route, data=prompt_dict)
