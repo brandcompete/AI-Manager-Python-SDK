@@ -73,7 +73,7 @@ models = client.get_models()
 In order to submit a query, the model must be passed as a parameter via id
 ```
 response:str = client.prompt(
-    model_id=10,
+    model_tag=10,
     query="my question to AI-Model")
 ```
 
@@ -105,7 +105,7 @@ from brandcompete.core.classes import Loader
 
 query="describe what you see on the picture."  
 response:dict = client.prompt(
-    model_id=21, 
+    model_tag=21, 
     query=query, 
     loader=Loader.IMAGE, 
     file_append_to_query="path/to/file.png")
@@ -117,7 +117,7 @@ response:dict = client.prompt(
 query="your question or order..."
     
 response:dict = client.prompt(
-    model_id=1, 
+    model_tag=1, 
     query=query, 
     loader=Loader.PDF, 
     file_append_to_query="path/to/file.pdf",
@@ -132,7 +132,7 @@ response:dict = client.prompt(
 query="your question or order..."
     
 response:dict = client.prompt(
-    model_id=1, 
+    model_tag=1, 
     query=query, 
     loader=Loader.PDF, 
     files_to_rag=["file/path/1.pdf", "file/path/2.pdf"]
