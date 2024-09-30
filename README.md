@@ -93,7 +93,7 @@ from brandcompete.core.classes import Loader
 
 query="Please summarize the following text: "  
 response:dict = client.prompt(
-    model_id=1, 
+    model_tag=1, 
     query=query, 
     loader=Loader.PDF, 
     file_append_to_query="path/to/file.pdf")

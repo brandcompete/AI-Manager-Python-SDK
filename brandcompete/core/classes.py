@@ -118,8 +118,8 @@ class Route(Enum):
     GET_MODELS='/api/v1/models'
     AUTH= '/api/v1/auth/authenticate'
     AUTH_REFRESH = '/api/v1/auth/refresh'
-    PROMPT = '/api/v1/models/model_id/prompt'
-    PROMPT_WIHT_DATASOURCE = '/api/v1/prompts'
+    PROMPT = '/api/v1/prompts/model_tag'
+    PROMPT_WITH_DATASOURCE = '/api/v1/prompts'
     DATA_SOURCE = '/api/v1/datasources'
 
 class Loader(Enum):

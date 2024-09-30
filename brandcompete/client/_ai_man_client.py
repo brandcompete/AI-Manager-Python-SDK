@@ -51,7 +51,7 @@ class AI_ManServiceClient():
 
         return models
 
-    def prompt(self, model_id: int, query: str, loader: Optional[Loader] = None, file_append_to_query: Optional[str] = None, files_to_rag: Optional[List[str]] = None, prompt_options: Optional[PromptOptions] = None) -> dict:
+    def prompt(self, **kwargs) -> dict:
         """_summary_
 
         Args:
@@ -67,7 +67,23 @@ class AI_ManServiceClient():
 
         Returns:
             dict: _description_
-        """        
+        """
+        if "model_id" in kwargs:
+            raise Exception(f"Error: model_id as parameter is deprecated. Use the model_tag instead. Aborting....")
+        
+        if "model_tag" not in kwargs:
+            raise ValueError(f"Error: missing required argument: model_tag")
+        
+        if "query" not in kwargs:
+            raise ValueError(f"Error: missing required argument: query")
+        
+        model_tag: int = kwargs["model_tag"]
+        query = kwargs["query"]
+        loader: Optional[Loader] = kwargs["loader"] if "loader" in kwargs else None
+        file_append_to_query: Optional[str] = kwargs["file_append_to_query"] if "file_append_to_query" in kwargs else None
+        files_to_rag: Optional[List[str]] = kwargs["files_to_rag"] if "files_to_rag" in kwargs else None
+        prompt_options: Optional[PromptOptions] = kwargs["prompt_options"] if "prompt_options" in kwargs else None
+        
         if loader is not None and file_append_to_query is None and files_to_rag is None:
             raise ValueError(
                 f"Missing Argument: file_append_to_query or files_to_rag")
@@ -110,7 +126,7 @@ class AI_ManServiceClient():
         prompt_dict['raw'] = prompt_options.raw
         prompt_dict['keepContext'] = prompt_options.keep_context
         
-        route = Route.PROMPT.value.replace("model_id", f"{model_id}")
+        route = Route.PROMPT.value.replace("model_tag", f"{model_tag}")
         response = self._perform_request(
             RequestType.POST, route=route, data=prompt_dict)
         return response
@@ -125,7 +141,7 @@ class AI_ManServiceClient():
         prompt_option_dict = prompt_options.to_dict()
         prompt_dict['options'] = prompt_option_dict
         
-        route = f"{Route.PROMPT_WIHT_DATASOURCE.value}/{model_tag_id}"
+        route = f"{Route.PROMPT_WITH_DATASOURCE.value}/{model_tag_id}"
         response = self._perform_request(
             RequestType.POST, route=route, data=prompt_dict)
         return response
