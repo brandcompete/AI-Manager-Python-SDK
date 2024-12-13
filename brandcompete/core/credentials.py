@@ -28,7 +28,7 @@ class TokenCredential():
         """Generate an AccessToken 
 
         Args:
-            api_host_url (str): The API-Host example: https://aiman-api.brandcompete.com/
+            api_host_url (str): The API-Host example: https://aiman-api.brandcompete.com
             user_name (str): The Username to login
             password (str): The User related password
 
@@ -73,6 +73,15 @@ class TokenCredential():
         
     @classmethod
     def _to_access_token_object(cls, response:requests.Response ) -> AccessToken:
+        """Warning: This method should not called externally
+           Converts an api authentication response into an AccessToken instance
+
+        Args:
+            response (requests.Response): api authentication response
+
+        Returns:
+            AccessToken: AccessToken instance with expiration time in Unix time
+        """
         content = json.loads(response.content.decode('utf-8')) 
         token = content['messageContent']['data']['access_token']
         refresh_token = content['messageContent']['data']['refresh_token']

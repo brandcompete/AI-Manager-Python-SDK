@@ -8,8 +8,8 @@ from llama_index.core import SimpleDirectoryReader
 from llama_index.core import download_loader, Document
 from pathlib import Path
 from typing import (
-    Any, Dict, List, Optional, Union,
-    TYPE_CHECKING
+    List,
+    Optional
 )
 
 from brandcompete.core.util import Util
@@ -34,6 +34,8 @@ class RequestType(Enum):
 
 
 class AI_ManServiceClient():
+    """Represents the AI Manager Service Client
+    """
 
     def __init__(self, credential: TokenCredential) -> None:
 
@@ -43,6 +45,14 @@ class AI_ManServiceClient():
         pass
 
     def get_models(self, filter: Optional[Filter] = None) -> List[AI_Model]:
+        """Get all available models to prompt on
+
+        Args:
+            filter (Optional[Filter], optional): Not implemented yet. Defaults to None.
+
+        Returns:
+            List[AI_Model]: List of available AI_Model objects
+        """
         results = self._perform_request(
             type=RequestType.GET, route=Route.GET_MODELS.value)
         models = list()
@@ -55,18 +65,18 @@ class AI_ManServiceClient():
         """_summary_
 
         Args:
-            model_id (int): _description_
-            query (str): _description_
-            loader (Optional[Loader], optional): _description_. Defaults to None.
-            file_append_to_query (Optional[str], optional): _description_. Defaults to None.
-            files_to_rag (Optional[List[str]], optional): _description_. Defaults to None.
-            prompt_options (Optional[PromptOptions], optional): _description_. Defaults to None.
+            model_id (int): the model id
+            query (str): Query to prompt
+            loader (Optional[Loader], optional): Content loader. Defaults to None.
+            file_append_to_query (Optional[str], optional): Absolute path to a file (The content is added to the query). Defaults to None.
+            files_to_rag (Optional[List[str]], optional): Absolute path to a file (File content to rag). Defaults to None.
+            prompt_options (Optional[PromptOptions], optional): Prompt options. Defaults to None.
 
         Raises:
-            ValueError: _description_
+            ValueError: If any of the required parameters are missing
 
         Returns:
-            dict: _description_
+            dict: The API-Response as dict
         """
         if "model_id" in kwargs:
             raise Exception(f"Error: model_id as parameter is deprecated. Use the model_tag instead. Aborting....")
@@ -131,7 +141,18 @@ class AI_ManServiceClient():
             RequestType.POST, route=route, data=prompt_dict)
         return response
 
-    def prompt_on_datasource(self, datasource_id:int, model_tag_id:int, query:str, prompt_options:PromptOptions = None) -> str:
+    def prompt_on_datasource(self, datasource_id:int, model_tag_id:int, query:str, prompt_options:PromptOptions = None) -> dict:
+        """Prompt on a datasource (by id)
+
+        Args:
+            datasource_id (int): The datasource id (related to current account)
+            model_tag_id (int): Model tag id
+            query (str): The query to prompt
+            prompt_options (PromptOptions, optional): Prompt options. Defaults to None.
+
+        Returns:
+            dict: The API-Response as dict
+        """
         if prompt_options is None:
             prompt_options = PromptOptions()
         prompt = Prompt()
@@ -146,8 +167,16 @@ class AI_ManServiceClient():
             RequestType.POST, route=route, data=prompt_dict)
         return response
 
-    def get_document_content(self, file_path: str, loader: Loader = None) -> str:
+    def get_document_content(self, file_path: str, loader: Loader = None) -> Optional[str]:
+        """Parsing document content)
 
+        Args:
+            file_path (str): The absolute file path
+            loader (Loader, optional): Loader to use for parsing (Excel, Image, CSV, PDF, DocX). Defaults to None.
+
+        Returns:
+            str: None or string
+        """
         if loader == Loader.EXCEL:
             df = pd.read_excel(file_path)
             return df.to_csv(sep='\t', index=False)
@@ -184,6 +213,11 @@ class AI_ManServiceClient():
         return text
     
     def fetch_all_datasources(self) -> List[DataSource]:
+        """Fetch all datasources related to the account
+
+        Returns:
+            List[DataSource]: List of datasource objects
+        """
         fetch_all_response = self._perform_request(RequestType.GET, Route.DATA_SOURCE.value)
         datasources = list()
         for response in fetch_all_response["datasources"]:
@@ -192,7 +226,17 @@ class AI_ManServiceClient():
             datasources.append(source)
         return datasources 
     
-    def get_datasource_by_id(self, id:int) -> DataSource:
+    def get_datasource_by_id(self, id:int) -> Optional[DataSource]:
+        """Get a specific datasource by id
+
+        Args:
+            id (int): the datasource id
+
+        Returns:
+            DataSource: None or Datasource object
+        """
+        #TODO THA 2024-12-13 Check if response has a valid datasource
+        
         url = f"{Route.DATA_SOURCE.value}/{id}"
         response = self._perform_request(RequestType.GET, url )
         source = response["datasource"]
@@ -212,6 +256,17 @@ class AI_ManServiceClient():
                 )
         
     def init_new_datasource(self, name:str, summary:str, tags:List[str]=[], categories:List[str]= []) -> int:
+        """Initiate and add a new datasource to current account
+
+        Args:
+            name (str): datasource name
+            summary (str): summary
+            tags (List[str], optional): A list of tags. Defaults to [].
+            categories (List[str], optional): a list of categories. Defaults to [].
+
+        Returns:
+            int: The datasource id
+        """
         data = {
             "name": name, 
             "summary": summary, 
@@ -220,7 +275,7 @@ class AI_ManServiceClient():
             "assocContexts": [],
             "media": []
             }
-        response = self._perform_request(RequestType.POST,Route.DATA_SOURCE.value,data=data)
+        response = self._perform_request(type=RequestType.POST, route=Route.DATA_SOURCE.value, data=data)
         
         if "datasource" in response:
             datasource = response["datasource"]
@@ -237,7 +292,7 @@ class AI_ManServiceClient():
         Returns:
             bool: success true or false
         """
-        code:int = self._perform_request(RequestType.DELETE, f"{Route.DATA_SOURCE.value}/{id}" )
+        code:int = self._perform_request(type=RequestType.DELETE, route=f"{Route.DATA_SOURCE.value}/{id}" )
         return code
     
     def add_documents(self, data_source_id:int, sources:List[str] ) -> DataSource:
@@ -257,7 +312,7 @@ class AI_ManServiceClient():
         
         for entry in sources:
             entry = entry.lower()
-            if Util.validate_url(entry,check_only=True):
+            if Util.validate_url(url=entry,check_only=True):
                 datasource.media.append({"name":entry, "mime_type":"text/x-uri"})
                 continue
             filename, file_ext = Util.get_file_name_and_ext(entry)
@@ -307,7 +362,7 @@ class AI_ManServiceClient():
         Returns:
             dict: _description_
         """
-        if self.credential.auto_refresh_token and Util.is_token_expired(self.credential.access.expires_on):
+        if self.credential.auto_refresh_token and Util.is_token_expired(token_credential=self.credential):
             self.credential.refresh_access_token()
 
         url = f"{self.credential.api_host}{route}"

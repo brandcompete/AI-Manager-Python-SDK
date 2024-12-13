@@ -3,6 +3,7 @@ from urllib.parse import urlparse
 import time, os
 
 from brandcompete.core.classes import Loader
+from brandcompete.core.credentials import TokenCredential
 
 
 class Util:
@@ -42,14 +43,28 @@ class Util:
 
     @classmethod
     def get_current_unix_time(cls) -> int:
+        """Get the current unix timestamp
+
+        Returns:
+            int: unix time
+        """
         return time.time()
     
     @classmethod
-    def is_token_expired(cls, expire_unix_time: int) -> bool:
-        return cls.get_current_unix_time() >= expire_unix_time
+    def is_token_expired(cls, token_credential: TokenCredential) -> bool:
+        """Checks whether the token has expired
+
+        Args:
+            token (TokenCredential): Instance of TokenCredentials ()
+
+        Returns:
+            bool: Is expired (true or false)
+        """
+        return cls.get_current_unix_time() >= token_credential.access.expires_on
     
     @classmethod
     def get_file_name(cls, file_path:str) -> str:
+        """Returns the final component of a pathname"""
         return os.path.basename(file_path)
     
     @classmethod
@@ -60,7 +75,7 @@ class Util:
 
     @classmethod
     def get_loader_by_ext(cls, file_ext:str) -> tuple:
-        loader = None
+        
         if file_ext == "pdf":
             return Loader.PDF, "application/pdf"
         if file_ext == "csv":
