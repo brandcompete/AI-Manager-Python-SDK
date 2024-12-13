@@ -5,10 +5,11 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "AI-Manager-Python-SDK"
 authors = [
-  {name = "Thorsten Atzeni", email = "thorsten.atzeni@brandcompete.com"}
+  {name = "brandcompete GmbH", email = "info@brandcompete.com"}
 ]
 maintainers = [
-  {name = "Thorsten Atzeni", email = "thorsten.atzeni@brandcompete.com"}
+  {name = "Thorsten Atzeni", email = "thorsten.atzeni@brandcompete.com"},
+  {name = "Dennis Hauser", email = "dennis.hauser@brandcompete.com"}
 ]
 description = "Service client to communicate with AI Man-API"
 version = "1.0.23"
