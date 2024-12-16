@@ -12,7 +12,7 @@ maintainers = [
   {name = "Dennis Hauser", email = "dennis.hauser@brandcompete.com"}
 ]
 description = "Service client to communicate with AI Man-API"
-version = "1.0.25"
+version = "1.0.26"
 license = {file = "LICENSE"}
 requires-python = ">= 3.8"
 dependencies = [

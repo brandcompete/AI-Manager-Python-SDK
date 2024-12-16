@@ -15,7 +15,7 @@ from typing import (
 from brandcompete.core.util import Util
 from brandcompete.core.credentials import TokenCredential
 from brandcompete.core.classes import (
-    AI_Model,
+    AIModel,
     Attachment,
     DataSource,
     PromptOptions,
@@ -33,7 +33,7 @@ class RequestType(Enum):
     DELETE = 3
 
 
-class AI_ManServiceClient():
+class AIManServiceClient():
     """Represents the AI Manager Service Client
     """
 
@@ -41,23 +41,23 @@ class AI_ManServiceClient():
 
         self.credential = credential
 
-    def set_model(self, model: AI_Model) -> None:
+    def set_model(self, model: AIModel) -> None:
         pass
 
-    def get_models(self, filter: Optional[Filter] = None) -> List[AI_Model]:
+    def get_models(self, filter: Optional[Filter] = None) -> List[AIModel]:
         """Get all available models to prompt on
 
         Args:
             filter (Optional[Filter], optional): Not implemented yet. Defaults to None.
 
         Returns:
-            List[AI_Model]: List of available AI_Model objects
+            List[AIModel]: List of available AIModel objects
         """
         results = self._perform_request(
             type=RequestType.GET, route=Route.GET_MODELS.value)
         models = list()
         for model in results['Models']:
-            models.append(AI_Model.from_dict(model))
+            models.append(AIModel.from_dict(model))
 
         return models
 
@@ -157,7 +157,7 @@ class AI_ManServiceClient():
             prompt_options = PromptOptions()
         prompt = Prompt()
         prompt.prompt = query
-        prompt.datasourceId = datasource_id
+        prompt.datasource_id = datasource_id
         prompt_dict = prompt.to_dict()
         prompt_option_dict = prompt_options.to_dict()
         prompt_dict['options'] = prompt_option_dict
@@ -177,6 +177,9 @@ class AI_ManServiceClient():
         Returns:
             str: None or string
         """
+        if loader == Loader.BASE64_ONLY:
+            with open(file_path, "rb") as ragFile:
+               return ragFile.read()
         if loader == Loader.EXCEL:
             df = pd.read_excel(file_path)
             return df.to_csv(sep='\t', index=False)
@@ -320,7 +323,7 @@ class AI_ManServiceClient():
             if loader is None:
                 raise Exception(f"Error: Unsupported filetype:{file_ext} (file:{filename})")
     
-            contentBase64 = base64.b64encode(str.encode(self.get_document_content(file_path=path_or_url,loader=loader)))        
+            contentBase64 = base64.b64encode(self.get_document_content(file_path=path_or_url, loader=Loader.BASE64_ONLY))        
             size_in_bytes = (len(contentBase64) * (3/4)) - 1
             datasource.media.append({"base64":contentBase64.decode(), "name":filename, "mime_type": mime_type, "size":size_in_bytes * 10})
         return self.update_datasource(datasource=datasource)

@@ -6,7 +6,7 @@ from dataclasses_json import dataclass_json, LetterCase
 
 @dataclass_json(letter_case=LetterCase.CAMEL)
 @dataclass
-class AI_Model:
+class AIModel:
     id:int
     uuId: str
     type: int
@@ -125,6 +125,7 @@ class Route(Enum):
 class Loader(Enum):
     PDF = "PDFReader",
     EXCEL = "PandasExcelReader",
+    BASE64_ONLY = "Base64",
     DOCX = "DocxReader",
     CSV = "SimpleCSVReader",
     URL = "url",
@@ -132,7 +133,7 @@ class Loader(Enum):
 
 __all__ = [
 
-    AI_Model,
+    AIModel,
     Project,
     Query,
     Route,

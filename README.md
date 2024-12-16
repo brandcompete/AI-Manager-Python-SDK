@@ -38,14 +38,14 @@ IMPORTANT NOTE: Use only the base url (without slash at the end and without /api
 
 ```
 from brandcompete.core.credentials import TokenCredential
-from brandcompete.client import AI_ManServiceClient
+from brandcompete.client import AIManServiceClient
 
 url = "https://aiman-api-test.brandcompete.com" (<-- base url only!)
 username = "john@doe.com"
 pw = "top_secret"
 
 token_credential = TokenCredential(api_host_url=url, user_name=username, password=pw)
-client = AI_ManServiceClient(credential=token_credential)
+client = AIManServiceClient(credential=token_credential)
 ```
 
 The client takes care of updating the token during the client's runtime if it has expired.
@@ -62,7 +62,7 @@ token_credential = TokenCredential(
 
 ### Fetching available AI-Models
 
-This method returns a list of type: AI_Model (```List[AI_Model]```)
+This method returns a list of type: AIModel (```List[AIModel]```)
 
 ```
 models = client.get_models()

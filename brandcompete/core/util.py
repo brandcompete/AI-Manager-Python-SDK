@@ -23,12 +23,17 @@ class Util:
             str: Parsed and proper formated url
         """
         try:
+            if not cls.check_is_url(url):
+                if check_only == True:
+                    return False
+                return url
             if not url.lower().startswith('http'):
                 url = "https://" + url
             if url.lower().startswith("http://"):
                 url = url.replace("http://", "https://")
             if url.lower().endswith("/"):
                 url = url[:-1]
+           
         except AttributeError:
             raise ValueError("url must be a string.")
         parsed_url = urlparse(url.rstrip('/'))
@@ -41,6 +46,16 @@ class Util:
             return True
         return url
 
+
+    @classmethod
+    def check_is_url(cls, value:str) ->bool:
+        if value.lower().startswith('http://'):
+            return True
+        if value.lower().startswith('https://'):
+            return True
+        if value.lower().startswith('www.'):
+            return True
+        return False
     @classmethod
     def get_current_unix_time(cls) -> int:
         """Get the current unix timestamp
