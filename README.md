@@ -177,7 +177,7 @@ client.add_documents(
     sources=["path/to_my_data/test.pdf", "https://www.brandcompete.com"] )
 ```
 ### Prompt on datasource context
-Prompt in conjunction with a datasource id. You have to use the defaultModelTagId instead of the id.
+Prompt in conjunction with a datasource id. You have to use the default_model_tag_id instead of the id.
 ```    
 client.prompt_on_datasource(
     datasource_id=datasource_id, 

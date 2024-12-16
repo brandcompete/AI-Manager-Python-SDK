@@ -15,14 +15,14 @@ class AI_Model:
     modified: str
     name: str
     short_description: str
-    longDescription: str
-    defaultModelTagId: int
-    amountOfPulls: str
-    amountOfTags: int
-    requiredMemory:str
+    long_description: str
+    default_model_tag_id: int
+    amount_of_pulls: str
+    amount_of_tags: int
+    required_memory:str
     size: 0
 
-@dataclass_json
+@dataclass_json(letter_case=LetterCase.CAMEL)
 @dataclass
 class Project:
     id: int
@@ -31,15 +31,15 @@ class Project:
     state: int
     created: str
     modified: str
-    ownerId: int
+    owner_id: int
     name: str
     description: str
 
-@dataclass_json
+@dataclass_json(letter_case=LetterCase.CAMEL)
 @dataclass
 class Query:
     id: int
-    uuId: str
+    uuid: str
     type: int
     state: int
     created: str
@@ -71,23 +71,23 @@ class PromptOptions:
     raw:bool = False
     keep_context:bool = True
 
-@dataclass_json
+@dataclass_json(letter_case=LetterCase.CAMEL)
 @dataclass
 class Prompt:
     prompt:str=""
-    modelTagId:int=0
+    model_tag_id:int=0
     raw:bool=False
     stream:bool=False
-    projectId:int=1
-    projectTabId:int=1
-    userId:int=1
+    project_id:int=1
+    project_tab_id:int=1
+    user_id:int=1
     verbose:int=True
     attachments:list = None
-    keepContext:bool = True
-    keepAlive:str = "5m"
-    datasourceId:int = 0 
+    keep_context:bool = True
+    keep_alive:str = "5m"
+    datasource_id:int = 0 
 
-@dataclass_json
+@dataclass_json(letter_case=LetterCase.CAMEL)
 @dataclass
 class DataSource:
     name:str
@@ -95,11 +95,11 @@ class DataSource:
     id:Optional[int] = -1
     categories: Optional[List[str]] = None
     tags: Optional[List[str]] = None
-    assocContexts: Optional[list] = None
+    assoc_contexts: Optional[list] = None
     media: Optional[list] = None
     status:Optional[int] = -1
-    mediaCount:Optional[int] = -1
-    ownerId:Optional[int] = -1
+    media_count:Optional[int] = -1
+    owner_id:Optional[int] = -1
     created:Optional[str] = None
     modified:Optional[str] = None
 
