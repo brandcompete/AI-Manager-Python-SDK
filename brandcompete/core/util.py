@@ -3,7 +3,7 @@ from urllib.parse import urlparse
 import time, os
 
 from brandcompete.core.classes import Loader
-from brandcompete.core.credentials import TokenCredential
+
 
 
 class Util:
@@ -51,16 +51,16 @@ class Util:
         return time.time()
     
     @classmethod
-    def is_token_expired(cls, token_credential: TokenCredential) -> bool:
+    def is_token_expired(cls, expire_unix_time: int) -> bool:
         """Checks whether the token has expired
 
         Args:
-            token (TokenCredential): Instance of TokenCredentials ()
+            expire_unix_time (int): expire_unix_time
 
         Returns:
             bool: Is expired (true or false)
         """
-        return cls.get_current_unix_time() >= token_credential.access.expires_on
+        return cls.get_current_unix_time() >= expire_unix_time
     
     @classmethod
     def get_file_name(cls, file_path:str) -> str:

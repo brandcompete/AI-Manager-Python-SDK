@@ -310,19 +310,18 @@ class AI_ManServiceClient():
         """
         datasource:DataSource = self.get_datasource_by_id(id=data_source_id)
         
-        for entry in sources:
-            entry = entry.lower()
-            if Util.validate_url(url=entry,check_only=True):
-                datasource.media.append({"name":entry, "mime_type":"text/x-uri"})
+        for path_or_url in sources:
+            path_or_url = path_or_url.lower()
+            if Util.validate_url(url=path_or_url, check_only=True):
+                datasource.media.append({"name":path_or_url, "mime_type":"text/x-uri"})
                 continue
-            filename, file_ext = Util.get_file_name_and_ext(entry)
+            filename, file_ext = Util.get_file_name_and_ext(file_path=path_or_url)
             loader, mime_type = Util.get_loader_by_ext(file_ext=file_ext)
             if loader is None:
                 raise Exception(f"Error: Unsupported filetype:{file_ext} (file:{filename})")
     
-            contentBase64 = base64.b64encode(str.encode(self.get_document_content(file_path=entry,loader=loader)))        
+            contentBase64 = base64.b64encode(str.encode(self.get_document_content(file_path=path_or_url,loader=loader)))        
             size_in_bytes = (len(contentBase64) * (3/4)) - 1
-            #datasource.media.append({"base64":contentBase64.decode(), "name":filename})
             datasource.media.append({"base64":contentBase64.decode(), "name":filename, "mime_type": mime_type, "size":size_in_bytes * 10})
         return self.update_datasource(datasource=datasource)
     
@@ -362,7 +361,7 @@ class AI_ManServiceClient():
         Returns:
             dict: _description_
         """
-        if self.credential.auto_refresh_token and Util.is_token_expired(token_credential=self.credential):
+        if self.credential.auto_refresh_token and Util.is_token_expired(self.credential.access.expires_on):
             self.credential.refresh_access_token()
 
         url = f"{self.credential.api_host}{route}"

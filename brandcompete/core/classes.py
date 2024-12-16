@@ -14,7 +14,7 @@ class AI_Model:
     created: str
     modified: str
     name: str
-    shortDescription: str
+    short_description: str
     longDescription: str
     defaultModelTagId: int
     amountOfPulls: str
