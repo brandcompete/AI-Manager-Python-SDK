@@ -247,9 +247,9 @@ class AI_ManServiceClient():
                 categories=source["categories"],
                 tags=source["tags"],
                 status=source["status"],
-                mediaCount=source["mediaCount"],
-                ownerId=source["ownerId"],
-                assocContexts=source["assocContexts"],
+                media_count=source["mediaCount"],
+                owner_id=source["ownerId"],
+                assoc_contexts=source["assocContexts"],
                 media=source["media"],
                 created=source["created"],
                 modified=source["modified"]
@@ -340,7 +340,7 @@ class AI_ManServiceClient():
             "summary": datasource.summary,
             "categories": datasource.categories,
             "tags": datasource.tags,
-            "assocContexts": datasource.assocContexts,
+            "assocContexts": datasource.assoc_contexts,
             "media": datasource.media}
         
         response = self._perform_request(RequestType.PUT, f"{Route.DATA_SOURCE.value}/{datasource.id}",data=data)
