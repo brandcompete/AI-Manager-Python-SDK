@@ -7,19 +7,13 @@ name = "AI-Manager-Python-SDK"
 authors = [
   {name = "brandcompete GmbH", email = "info@brandcompete.com"}
 ]
-maintainers = [
-  {name = "Thorsten Atzeni", email = "thorsten.atzeni@brandcompete.com"},
-  {name = "Dennis Hauser", email = "dennis.hauser@brandcompete.com"}
-]
 description = "Service client to communicate with AI Man-API"
-version = "1.0.26"
+version = "1.0.30"
 license = {file = "LICENSE"}
 requires-python = ">= 3.8"
 dependencies = [
-    'dataclasses-json',
     'pyjwt',
     'setuptools',
-    'llama-index', 
     'pandas',
     'pypdf',
     'PyPDF2',
@@ -27,8 +21,20 @@ dependencies = [
     'docx2txt'
 ]
 classifiers = [
-    "Programming Language :: Python :: 3",
-    "Operating System :: OS Independent"
+    'Development Status :: 4 - Beta',
+    'Environment :: Console',
+    'Intended Audience :: Science/Research',
+    'License :: OSI Approved :: Apache Software License',
+    "Operating System :: OS Independent",
+    'Programming Language :: Python',
+    'Programming Language :: Python :: 3',
+    'Programming Language :: Python :: 3 :: Only',
+    'Programming Language :: Python :: 3.8',
+    'Programming Language :: Python :: 3.9',
+    'Programming Language :: Python :: 3.10',
+    'Programming Language :: Python :: 3.11',
+    'Programming Language :: Python :: 3.12',
+    'Topic :: Scientific/Engineering :: Artificial Intelligence'
 ]
 readme = "README.md"
 

@@ -1,17 +1,14 @@
-import requests
+"""Module providing a aiman service client"""
 import json
 import base64
-import pandas as pd
-import PyPDF2
-from enum import Enum
-from llama_index.core import SimpleDirectoryReader
-from llama_index.core import download_loader, Document
-from pathlib import Path
 from typing import (
     List,
     Optional
 )
-
+import PyPDF2
+import pandas
+import docx2txt
+import requests
 from brandcompete.core.util import Util
 from brandcompete.core.credentials import TokenCredential
 from brandcompete.core.classes import (
@@ -20,42 +17,29 @@ from brandcompete.core.classes import (
     DataSource,
     PromptOptions,
     Route,
-    Filter,
     Prompt,
-    Loader
+    Loader,
+    RequestType
 )
 
 
-class RequestType(Enum):
-    POST = 0,
-    GET = 1,
-    PUT = 2,
-    DELETE = 3
-
-
 class AIManServiceClient():
-    """Represents the AI Manager Service Client
-    """
+    """Represents the AI Manager Service Client"""
 
     def __init__(self, credential: TokenCredential) -> None:
 
         self.credential = credential
+        self.request_timeout = 200
 
-    def set_model(self, model: AIModel) -> None:
-        pass
-
-    def get_models(self, filter: Optional[Filter] = None) -> List[AIModel]:
+    def get_models(self) -> List[AIModel]:
         """Get all available models to prompt on
-
-        Args:
-            filter (Optional[Filter], optional): Not implemented yet. Defaults to None.
 
         Returns:
             List[AIModel]: List of available AIModel objects
         """
         results = self._perform_request(
-            type=RequestType.GET, route=Route.GET_MODELS.value)
-        models = list()
+            request_type=RequestType.GET, route=Route.GET_MODELS.value)
+        models = []
         for model in results['Models']:
             models.append(AIModel.from_dict(model))
 
@@ -79,34 +63,38 @@ class AIManServiceClient():
             dict: The API-Response as dict
         """
         if "model_id" in kwargs:
-            raise Exception(f"Error: model_id as parameter is deprecated. Use the model_tag instead. Aborting....")
-        
+            raise ValueError(
+                "Error: model_id as parameter is deprecated. Use the model_tag instead. Aborting....")
+
         if "model_tag" not in kwargs:
-            raise ValueError(f"Error: missing required argument: model_tag")
-        
+            raise ValueError(
+                "Error: missing required argument: model_tag")
+
         if "query" not in kwargs:
-            raise ValueError(f"Error: missing required argument: query")
-        
+            raise ValueError(
+                "Error: missing required argument: query")
+
         model_tag: int = kwargs["model_tag"]
         query = kwargs["query"]
-        loader: Optional[Loader] = kwargs["loader"] if "loader" in kwargs else None
-        file_append_to_query: Optional[str] = kwargs["file_append_to_query"] if "file_append_to_query" in kwargs else None
-        files_to_rag: Optional[List[str]] = kwargs["files_to_rag"] if "files_to_rag" in kwargs else None
-        prompt_options: Optional[PromptOptions] = kwargs["prompt_options"] if "prompt_options" in kwargs else None
-        
+        loader = kwargs["loader"] if "loader" in kwargs else None
+        file_append_to_query = kwargs["file_append_to_query"] if "file_append_to_query" in kwargs else None
+        files_to_rag = kwargs["files_to_rag"] if "files_to_rag" in kwargs else None
+        prompt_options = kwargs["prompt_options"] if "prompt_options" in kwargs else None
+
         if loader is not None and file_append_to_query is None and files_to_rag is None:
             raise ValueError(
-                f"Missing Argument: file_append_to_query or files_to_rag")
+                "Missing Argument: file_append_to_query or files_to_rag")
 
-        attachments = list()
+        attachments = []
         if loader is not None:
             if file_append_to_query is not None:
                 doc_content = self.get_document_content(
                     file_path=file_append_to_query, loader=loader)
-                if(loader == Loader.IMAGE):
+                if loader == Loader.IMAGE:
                     encoded_contents = base64.b64encode(doc_content)
                     attachment = Attachment()
-                    attachment.name = Util.get_file_name(file_path=file_append_to_query)
+                    attachment.name = Util.get_file_name(
+                        file_path=file_append_to_query)
                     attachment.base64 = encoded_contents.decode()
                     attachments.append(attachment.to_dict())
                 else:
@@ -132,16 +120,16 @@ class AIManServiceClient():
         prompt_dict['options'] = prompt_option_dict
         if len(attachments) > 0:
             prompt_dict['attachments'] = attachments
-        
+
         prompt_dict['raw'] = prompt_options.raw
         prompt_dict['keepContext'] = prompt_options.keep_context
-        
+
         route = Route.PROMPT.value.replace("model_tag", f"{model_tag}")
         response = self._perform_request(
             RequestType.POST, route=route, data=prompt_dict)
         return response
 
-    def prompt_on_datasource(self, datasource_id:int, model_tag_id:int, query:str, prompt_options:PromptOptions = None) -> dict:
+    def prompt_on_datasource(self, datasource_id: int, model_tag_id: int, query: str, prompt_options: PromptOptions = None) -> dict:
         """Prompt on a datasource (by id)
 
         Args:
@@ -161,7 +149,7 @@ class AIManServiceClient():
         prompt_dict = prompt.to_dict()
         prompt_option_dict = prompt_options.to_dict()
         prompt_dict['options'] = prompt_option_dict
-        
+
         route = f"{Route.PROMPT_WITH_DATASOURCE.value}/{model_tag_id}"
         response = self._perform_request(
             RequestType.POST, route=route, data=prompt_dict)
@@ -172,133 +160,114 @@ class AIManServiceClient():
 
         Args:
             file_path (str): The absolute file path
-            loader (Loader, optional): Loader to use for parsing (Excel, Image, CSV, PDF, DocX). Defaults to None.
+            loader (Loader, optional): Loader to use for parsing content. Defaults to None.
 
         Returns:
             str: None or string
         """
         if loader == Loader.BASE64_ONLY:
-            with open(file_path, "rb") as ragFile:
-               return ragFile.read()
+            with open(file_path, "rb") as rag_file:
+                return rag_file.read()
         if loader == Loader.EXCEL:
-            df = pd.read_excel(file_path)
+            df = pandas.read_excel(file_path)
             return df.to_csv(sep='\t', index=False)
 
         if loader == Loader.IMAGE:
-            with open(file_path, "rb") as imageFile:
-               return imageFile.read()
-           
+            with open(file_path, "rb") as image_file:
+                return image_file.read()
+
         if loader == Loader.CSV:
-            df = pd.read_csv(file_path)
+            df = pandas.read_csv(file_path)
             return df.to_csv(sep='\t', index=False)
 
         if loader == Loader.PDF:
             pdf_reader = PyPDF2.PdfReader(file_path)
             text = ""
-            for i in range(len(pdf_reader.pages)):
+            for i in enumerate(pdf_reader.pages):
                 page = pdf_reader.pages[i]
                 text += page.extract_text()
             return text
-        DocxReader = download_loader("DocxReader")
 
-        documents: List[Document] = None
+        if loader == Loader.DOCX:
+            text = docx2txt.process(file_path)
+            return text
 
-        dir_reader = SimpleDirectoryReader(
-            input_files=[file_path],
-            file_extractor={
-                ".docx": DocxReader()})
-        documents = dir_reader.load_data()
+        return None
 
-        text = ""
-
-        for doc in documents:
-            text += doc.get_text()
-        return text
-    
     def fetch_all_datasources(self) -> List[DataSource]:
         """Fetch all datasources related to the account
 
         Returns:
             List[DataSource]: List of datasource objects
         """
-        fetch_all_response = self._perform_request(RequestType.GET, Route.DATA_SOURCE.value)
+        fetch_all_response = self._perform_request(
+            RequestType.GET, Route.DATA_SOURCE.value)
         datasources = list()
         for response in fetch_all_response["datasources"]:
             source = self.get_datasource_by_id(response["id"])
-            
+
             datasources.append(source)
-        return datasources 
-    
-    def get_datasource_by_id(self, id:int) -> Optional[DataSource]:
+        return datasources
+
+    def get_datasource_by_id(self, datasource_id: int) -> Optional[DataSource]:
         """Get a specific datasource by id
 
         Args:
-            id (int): the datasource id
+            datasource_id (int): the datasource id
 
         Returns:
             DataSource: None or Datasource object
         """
-        #TODO THA 2024-12-13 Check if response has a valid datasource
-        
-        url = f"{Route.DATA_SOURCE.value}/{id}"
-        response = self._perform_request(RequestType.GET, url )
+        # TODO THA 2024-12-13 Check if response has a valid datasource
+
+        url = f"{Route.DATA_SOURCE.value}/{datasource_id}"
+        response = self._perform_request(RequestType.GET, url)
         source = response["datasource"]
-        return DataSource(
-                id=source["id"],
-                name=source["name"],
-                summary=source["summary"],
-                categories=source["categories"],
-                tags=source["tags"],
-                status=source["status"],
-                media_count=source["mediaCount"],
-                owner_id=source["ownerId"],
-                assoc_contexts=source["assocContexts"],
-                media=source["media"],
-                created=source["created"],
-                modified=source["modified"]
-                )
-        
-    def init_new_datasource(self, name:str, summary:str, tags:List[str]=[], categories:List[str]= []) -> int:
+        return DataSource.from_dict(source)
+
+    def init_new_datasource(self, name: str, summary: str, tags: List[str] = None, categories: List[str] = None) -> int:
         """Initiate and add a new datasource to current account
 
         Args:
             name (str): datasource name
             summary (str): summary
-            tags (List[str], optional): A list of tags. Defaults to [].
-            categories (List[str], optional): a list of categories. Defaults to [].
+            tags (List[str], optional): A list of tags. Defaults to None.
+            categories (List[str], optional): a list of categories. Defaults to None.
 
         Returns:
             int: The datasource id
         """
         data = {
-            "name": name, 
-            "summary": summary, 
-            "tags": tags, 
-            "categories":categories,
+            "name": name,
+            "summary": summary,
+            "tags": [] if tags is None else tags,
+            "categories": [] if categories is None else categories,
             "assocContexts": [],
             "media": []
-            }
-        response = self._perform_request(type=RequestType.POST, route=Route.DATA_SOURCE.value, data=data)
-        
+        }
+        response = self._perform_request(
+            request_type=RequestType.POST, route=Route.DATA_SOURCE.value, data=data)
+
         if "datasource" in response:
             datasource = response["datasource"]
             if "id" in datasource:
                 return datasource["id"]
         return -1
-        
-    def delete_datasource(self, id:int) -> bool:
+
+    def delete_datasource(self, datasource_id: int) -> bool:
         """Delete a specific datasource by id
 
         Args:
-            id (int): the datasource id
+            datasource_id (int): the datasource id
 
         Returns:
             bool: success true or false
         """
-        code:int = self._perform_request(type=RequestType.DELETE, route=f"{Route.DATA_SOURCE.value}/{id}" )
+        code: int = self._perform_request(
+            request_type=RequestType.DELETE, route=f"{Route.DATA_SOURCE.value}/{datasource_id}")
         return code
-    
-    def add_documents(self, data_source_id:int, sources:List[str] ) -> DataSource:
+
+    def add_documents(self, data_source_id: int, sources: List[str]) -> DataSource:
         """Add one or more documents (files, urls) to an datasource
 
         Args:
@@ -311,25 +280,30 @@ class AIManServiceClient():
         Returns:
             DataSource: the datasource with all added documents (media list)
         """
-        datasource:DataSource = self.get_datasource_by_id(id=data_source_id)
-        
+        datasource: DataSource = self.get_datasource_by_id(
+            datasource_id=data_source_id)
+
         for path_or_url in sources:
             path_or_url = path_or_url.lower()
             if Util.validate_url(url=path_or_url, check_only=True):
-                datasource.media.append({"name":path_or_url, "mime_type":"text/x-uri"})
+                datasource.media.append(
+                    {"name": path_or_url, "mime_type": "text/x-uri"})
                 continue
-            filename, file_ext = Util.get_file_name_and_ext(file_path=path_or_url)
+            filename, file_ext = Util.get_file_name_and_ext(
+                file_path=path_or_url)
             loader, mime_type = Util.get_loader_by_ext(file_ext=file_ext)
             if loader is None:
-                raise Exception(f"Error: Unsupported filetype:{file_ext} (file:{filename})")
-    
-            contentBase64 = base64.b64encode(self.get_document_content(file_path=path_or_url, loader=Loader.BASE64_ONLY))        
-            size_in_bytes = (len(contentBase64) * (3/4)) - 1
-            datasource.media.append({"base64":contentBase64.decode(), "name":filename, "mime_type": mime_type, "size":size_in_bytes * 10})
+                raise ValueError(
+                    f"Error: Unsupported filetype:{file_ext} (file:{filename})")
+
+            content_base64 = base64.b64encode(self.get_document_content(
+                file_path=path_or_url, loader=Loader.BASE64_ONLY))
+            size_in_bytes = (len(content_base64) * (3/4)) - 1
+            datasource.media.append({"base64": content_base64.decode(
+            ), "name": filename, "mime_type": mime_type, "size": size_in_bytes * 10})
         return self.update_datasource(datasource=datasource)
-    
-    
-    def update_datasource(self, datasource:DataSource)-> DataSource:
+
+    def update_datasource(self, datasource: DataSource) -> DataSource:
         """Update an existing datasource
 
         Args:
@@ -345,16 +319,16 @@ class AIManServiceClient():
             "tags": datasource.tags,
             "assocContexts": datasource.assoc_contexts,
             "media": datasource.media}
-        
-        response = self._perform_request(RequestType.PUT, f"{Route.DATA_SOURCE.value}/{datasource.id}",data=data)
+
+        response = self._perform_request(
+            RequestType.PUT, f"{Route.DATA_SOURCE.value}/{datasource.id}", data=data)
         return response
 
-            
-    def _perform_request(self, type: RequestType, route: str, data: dict = None) -> dict:
+    def _perform_request(self, request_type: RequestType, route: str, data: dict = None) -> dict:
         """Warning. This method is private and should not be called manually
 
         Args:
-            type (RequestType): Enum of RequestTypes (GET, POST, PUT and DELETE)
+            request_type (RequestType): Enum of RequestTypes (GET, POST, PUT and DELETE)
             route (str): _description_
             data (dict, optional): _description_. Defaults to None.
 
@@ -370,29 +344,45 @@ class AIManServiceClient():
         url = f"{self.credential.api_host}{route}"
         response = None
         headers = {"accept": "application/json"}
-        headers.update({"Authorization": f"Bearer {self.credential.access.token}"})
-        if type == RequestType.GET:
+        headers.update(
+            {"Authorization": f"Bearer {self.credential.access.token}"})
+        if request_type == RequestType.GET:
             response = requests.get(
-                url=url, headers=headers, allow_redirects=True)
+                url=url,
+                headers=headers,
+                allow_redirects=True,
+                timeout=self.request_timeout)
 
-        if type == RequestType.POST:
+        if request_type == RequestType.POST:
             headers.update({"Content-Type": "application/json"})
             response = requests.post(
-                url=url, headers=headers, json=data, allow_redirects=True)
-        
-        if type == RequestType.DELETE:
+                url=url,
+                headers=headers,
+                json=data,
+                allow_redirects=True,
+                timeout=self.request_timeout)
+
+        if request_type == RequestType.DELETE:
             headers.update({"Content-Type": "application/json"})
             response = requests.delete(
-                url=url, headers=headers, allow_redirects=True)
+                url=url,
+                headers=headers,
+                allow_redirects=True,
+                timeout=self.request_timeout)
             return response.status_code
-        
-        if type == RequestType.PUT:
+
+        if request_type == RequestType.PUT:
             headers.update({"Content-Type": "application/json"})
             response = requests.put(
-                url=url, headers=headers, json=data, allow_redirects=True)
+                url=url,
+                headers=headers,
+                json=data,
+                allow_redirects=True,
+                timeout=self.request_timeout)
 
-        if response.status_code not in [200,201,202]:
-            raise Exception(f"[{response.status_code}] Reason: {response.reason}")
+        if response.status_code not in [200, 201, 202]:
+            raise RuntimeError(
+                f"[{response.status_code}] Reason: {response.reason}")
 
         content = json.loads(response.content.decode('utf-8'))
         return content['messageContent']['data']
