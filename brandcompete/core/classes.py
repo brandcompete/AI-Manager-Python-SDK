@@ -40,14 +40,15 @@ class AIModel:
         """Parsing a dict to a AIModel Instance"""
         cls.id = values["id"]
         cls.uuid = values["uuId"]
-        cls.owner_id = values["name"]
-        cls.name = values["shortDescription"]
-        cls.description = values["longDescription"]
-        cls.owner_id = values["defaultModelTagId"]
-        cls.name = values["amountOfPulls"]
-        cls.description = values["amountOfTags"]
-        cls.owner_id = values["requiredMemory"]
-        cls.name = values["size"]
+        cls.name = values["name"]
+        cls.short_description = values["shortDescription"]
+        cls.long_description = values["longDescription"]
+        cls.default_model_tag_id = values["defaultModelTagId"]
+        cls.amount_of_pulls = values["amountOfPulls"]
+        cls.amount_of_tags = values["amountOfTags"]
+        cls.required_memory = values["requiredMemory"]
+        cls.size = values["size"]
+        return cls
 
 
 @dataclass
@@ -78,6 +79,7 @@ class Project:
         cls.owner_id = values["ownerId"]
         cls.name = values["name"]
         cls.description = values["description"]
+        return cls
 
 
 @dataclass
@@ -99,6 +101,7 @@ class Query:
         """Parsing a dict to a Projcet Instance"""
         cls.id = values["id"]
         cls.uuid = values["uuId"]
+        return cls
 
 
 @dataclass
@@ -168,6 +171,7 @@ class PromptOptions:
         cls.top_p = values["top_p"]
         cls.raw = values["raw"]
         cls.keep_context = values["keep_context"]
+        return cls
 
 
 @dataclass
@@ -218,6 +222,7 @@ class Prompt:
         cls.keep_context = values["keepContext"]
         cls.keep_alive = values["keepAlive"]
         cls.datasource_id = values["datasourceId"]
+        return cls
 
 
 @dataclass
@@ -263,6 +268,7 @@ class DataSource:
         cls.status = values["status"]
         cls.media_count = values["mediaCount"]
         cls.owner_id = values["ownerId"]
+        return cls
 
 
 @dataclass
@@ -279,6 +285,7 @@ class Media:
     def from_dict(cls, values: dict):
         """Parsing a dict to a Media Instance"""
         cls.base64 = values["base64"]
+        return cls
 
 
 @dataclass
@@ -286,17 +293,28 @@ class Attachment:
     """Represents an prompt attachment"""
     name: str = ""
     base64: str = ""
+    size: int = 0
+    mime_type: str = ""
+    
 
     @classmethod
     def to_dict(cls):
         """Parsing a Media Instance to a dict"""
-        return { "base64":  cls.base64, "name": cls.name}
+        return {
+            "base64":   cls.base64,
+            "name":     cls.name,
+            "size":     cls.size,
+            "mime_type":cls.mime_type
+            }
 
     @classmethod
     def from_dict(cls, values: dict):
         """Parsing a dict to a Media Instance"""
         cls.name = values["name"]
         cls.base64 = values["base64"]
+        cls.size = values["size"]
+        cls.mime_type = values["mime_type"]
+        return cls
 
 
 class Route(Enum):
