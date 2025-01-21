@@ -41,7 +41,8 @@ class AIManServiceClient():
             request_type=RequestType.GET, route=Route.GET_MODELS.value)
         models = []
         for model in results['Models']:
-            models.append(AIModel.from_dict(model))
+            new_model = AIModel()
+            models.append(new_model.from_dict(model))
 
         return models
 
@@ -223,7 +224,8 @@ class AIManServiceClient():
         url = f"{Route.DATA_SOURCE.value}/{datasource_id}"
         response = self._perform_request(RequestType.GET, url)
         source = response["datasource"]
-        return DataSource.from_dict(source)
+        data_source = DataSource()
+        return data_source.from_dict(source)
 
     def init_new_datasource(self, name: str, summary: str, tags: List[str] = None, categories: List[str] = None) -> int:
         """Initiate and add a new datasource to current account
